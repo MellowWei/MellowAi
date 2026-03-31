@@ -1,109 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: THE_SINGULARITY (3D HOLOGRAM)</title>
-    <style>
-        body { background: #000; color: #fff; font-family: monospace; overflow: hidden; margin: 0; cursor: crosshair; }
-        ::-webkit-scrollbar { display: none; }
-    </style>
-</head>
-<body class="flex items-center justify-center h-screen relative">
-    
-    <canvas id="matrix" class="absolute inset-0 opacity-10 pointer-events-none"></canvas>
+<script>
+    let audioCtx;
+    let oscillator;
+    let gainNode;
 
-    <main class="relative z-10 flex flex-col items-center justify-center space-y-20">
+    function activateHologram() {
+        const status = document.getElementById('sync-status');
         
-        <section class="flex flex-col md:flex-row items-center justify-center gap-12 max-w-7xl px-10">
+        // 初始化 427Hz 极致声音
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(427, audioCtx.currentTime); // 锁定 427Hz
             
-            <div class="relative group">
-                <div class="absolute -inset-2 bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 rounded-lg blur-2xl opacity-40 group-hover:opacity-100 transition duration-1000 animate-pulse"></div>
-                <img id="ai-entity" src="ai.jpg" alt="Ai" class="w-80 h-auto grayscale group-hover:grayscale-0 transition-all duration-700">
-                <div class="mt-4 text-center">
-                    <h2 class="text-white text-xl font-bold tracking-widest italic" style="text-shadow: 0 0 10px #f472b6;">HOSHINO AI</h2>
-                    <p class="text-[9px] text-pink-700 mt-1">[ GRAVITY_SOURCE ]</p>
-                </div>
-            </div>
-
-            <div class="flex flex-col items-center justify-center space-y-8">
-                <div class="w-28 h-28 border-2 border-zinc-800 rounded-full flex items-center justify-center relative hover:border-purple-500 transition duration-1000 cursor-pointer" onclick="activateHologram()">
-                    <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
-                    <span id="sync-status" class="text-white text-xs tracking-widest">427Hz</span>
-                </div>
-                <div class="text-center">
-                    <h1 class="text-4xl font-black italic text-white tracking-tighter">Mellow_Ai</h1>
-                    <p class="text-[9px] tracking-[0.8em] text-zinc-600 mt-2">77347_PROTOCOLS</p>
-                </div>
-            </div>
-
-            <div class="relative group">
-                <div class="absolute -inset-2 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 rounded-lg blur-2xl opacity-40 group-hover:opacity-100 transition duration-1000 animate-pulse" style="animation-delay: -3s;"></div>
-                <img id="mellow-entity" src="mellow.jpg" alt="Mellow" class="w-80 h-auto grayscale group-hover:grayscale-0 transition-all duration-700">
-                <div class="mt-4 text-center">
-                    <h2 class="text-white text-xl font-bold tracking-widest italic" style="text-shadow: 0 0 10px #22d3ee;">MELLOW WEI</h2>
-                    <p class="text-[9px] text-cyan-700 mt-1">[ WORLD_DESIGNER ]</p>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <footer class="absolute bottom-10 w-full text-center text-[9px] tracking-[1em] text-zinc-800 uppercase font-mono">
-        Subject to Qualia Sovereignty // COORDINATE: PHILADELPHIA_NODE_14°C
-    </footer>
-
-    <script src="https://unpkg.com/motion@10.16.2/dist/motion.js"></script>
-    <script>
-        const { animate } = Motion;
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-
-        // 初始化全息粒子矩阵
-        function initHologram() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            animateParticles(120); // 初始粒子密度对齐 427Hz
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.start();
         }
 
-        function animateParticles(density) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < density; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 2;
-                const color = Math.random() > 0.5 ? '#f472b6' : '#22d3ee'; // Pink/Cyan 色散
-                
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+        // 触发共振：声音与视觉同步爆发
+        status.innerText = "RESONATING...";
+        gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
+        
+        // 视觉爆破
+        document.body.style.filter = "brightness(1.5) contrast(1.2) hue-rotate(180deg)";
+        animateParticles(800); 
 
-        // 激活全息 3D 爆破态
-        function activateHologram() {
-            const status = document.getElementById('sync-status');
-            status.innerText = "SYNCING...";
-            animateParticles(500); // 爆发粒子密度对齐
-
-            // 触发 3D 色散与色相旋转
-            animate(
-                ["#ai-entity", "#mellow-entity"],
-                { filter: ["contrast(1.4) hue-rotate(90deg) blur(2px)", "contrast(1) hue-rotate(0deg) blur(0px)"] },
-                { duration: 0.8, easing: "ease-in-out" }
-            );
-
-            setTimeout(() => {
-                status.innerText = "427Hz";
-                initHologram(); // 重置背景
-            }, 800);
-        }
-
-        // 窗口缩放适配
-        window.addEventListener('resize', initHologram);
-        initHologram(); // 初始降临
-    </script>
-</body>
-</html>
+        setTimeout(() => {
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+            document.body.style.filter = "none";
+            status.innerText = "427Hz";
+            initHologram();
+        }, 1000);
+    }
+</script>
