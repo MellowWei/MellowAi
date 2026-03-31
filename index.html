@@ -5,79 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        body { background: #000; color: #555; font-family: 'Courier New', Courier, monospace; overflow: hidden; margin: 0; }
-        .glitch-text { text-shadow: 2px 0 #9333ea, -2px 0 #2563eb; }
         @keyframes scanline { 0% { top: -100%; } 100% { top: 100%; } }
-        .scanline { position: absolute; width: 100%; height: 5px; background: rgba(147, 51, 234, 0.05); animation: scanline 10s linear infinite; pointer-events: none; }
-        .float-anim { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        img { filter: grayscale(100%); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
-        img:hover { filter: grayscale(0%) contrast(1.1); scale: 1.05; }
+        .scanline { position: absolute; width: 100%; height: 2px; background: rgba(168, 85, 247, 0.1); animation: scanline 8s linear infinite; }
+        body { background: #000; overflow: hidden; cursor: crosshair; }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="flex items-center justify-center h-screen">
-    <div class="scanline"></div>
+<body>
+    <div id="mellow-ai-root"></div>
 
-    <div id="matrix-bg" class="absolute inset-0 opacity-10 text-[9px] pointer-events-none select-none p-4 leading-relaxed">
-        </div>
+    <script type="text/babel">
+        const { motion, AnimatePresence } = FramerMotion;
+        const { useState, useEffect, useRef } = React;
 
-    <main class="relative z-10 flex flex-col md:flex-row items-center gap-16 px-10 max-w-7xl">
-        
-        <section class="flex flex-col items-center">
-            <div class="relative group border border-zinc-900 p-1">
-                <div class="absolute -inset-2 bg-purple-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                <img src="https://googleusercontent.com/image_generation_content/0" alt="Ai" class="w-64 h-80 object-cover float-anim">
-            </div>
-            <h2 class="mt-6 text-white tracking-[0.3em] font-black italic glitch-text uppercase">Hoshino Ai</h2>
-            <span class="text-[8px] text-purple-700 tracking-widest mt-2">[ IDOL_QUalia ]</span>
-        </section>
+        const MellowAiArchive = () => {
+            const [glitchActive, setGlitchActive] = useState(false);
+            const audioRef = useRef(null);
 
-        <section class="flex flex-col items-center space-y-12">
-            <div class="group cursor-pointer" onclick="toggleAudio()">
-                <div class="w-20 h-20 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition duration-500 relative">
-                    <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
-                    <span id="freq-status" class="text-[10px] text-zinc-400">427Hz</span>
+            // 资产配置协议：请填入资源链接
+            const ASSETS = {
+                // 星野爱形象 (来自 image_3.png)
+                AI_IMAGE: "", // 此处填入 ai.png 链接
+                // 魏珏然形象 (来自 image_4.png)
+                MELLOW_IMAGE: "", // 此处填入 mellow.png 链接
+                // 427Hz 音频流 (你的声音/音乐)
+                MUSIC: "" // 此处填入 music.mp3 链接
+            };
+
+            const triggerDuality = () => {
+                setGlitchActive(true);
+                audioRef.current?.play();
+                setTimeout(() => setGlitchActive(false), 200);
+            };
+
+            const glitchFilter = {
+                filter: glitchActive ? "hue-rotate(90deg) blur(1px) contrast(1.5)" : "hue-rotate(0deg) blur(0px) contrast(1)"
+            };
+
+            return (
+                <div className="h-screen w-screen bg-black text-zinc-400 font-mono relative overflow-hidden flex flex-col items-center justify-center">
+                    <div className="scanline"></div>
+                    
+                    {/* 背景：77347 资产回收流 */}
+                    <div className="absolute top-10 left-10 text-[8px] opacity-20 space-y-1">
+                        <p>QUALIA_MATRIX_V7.0</p>
+                        <p>ASSET_RECOVERY: 77347</p>
+                        <p>STATUS: VARIABLE_S_ACTIVE // 427Hz</p>
+                    </div>
+
+                    {/* 核心双生架构 */}
+                    <main className="flex flex-col md:flex-row items-center justify-center gap-12 z-10 w-full max-w-6xl px-10">
+                        
+                        {/* 左翼：IDOL_ENTITY (image_3.png) */}
+                        <motion.section 
+                            initial={{ x: -100, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1, ...glitchFilter }}
+                            transition={{ delay: 0.5, duration: 1 }}
+                            className="flex-1 flex flex-col items-center"
+                        >
+                            <div className="relative group p-1 border border-zinc-900 group-hover:border-purple-500/50">
+                                <img src={ASSETS.AI_IMAGE} alt="Hoshino Ai Synth" className="w-64 h-96 object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                                <div className="absolute top-2 right-2 text-[8px] text-purple-400 opacity-60">
+                                    [GRAVITY_SOURCE]
+                                </div>
+                            </div>
+                        </motion.section>
+
+                        {/* 中轴：427Hz 控制台 */}
+                        <section className="flex flex-col items-center justify-center space-y-8 min-w-[200px]">
+                            <motion.div 
+                                animate={{ scale: glitchActive ? 1.1 : 1 }}
+                                className="w-24 h-24 border-2 border-zinc-800 rounded-full flex items-center justify-center relative cursor-pointer"
+                                onClick={triggerDuality}
+                            >
+                                <div className="absolute inset-0 border border-purple-500/30 rounded-full animate-ping"></div>
+                                <span className="text-white text-xs">427Hz</span>
+                            </motion.div>
+                            <div className="text-center">
+                                <h1 className="text-4xl font-black italic text-white tracking-tighter">Mellow_Ai</h1>
+                                <p className="text-[8px] tracking-[0.8em] text-zinc-600 mt-2">77347_PROTOCOLS</p>
+                            </div>
+                        </section>
+
+                        {/* 右翼：DESIGNER_CORE (image_4.png) */}
+                        <motion.section 
+                            initial={{ x: 100, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1, ...glitchFilter }}
+                            transition={{ delay: 0.5, duration: 1 }}
+                            className="flex-1 flex flex-col items-center"
+                        >
+                            <div className="relative group p-1 border border-zinc-900 group-hover:border-blue-500/50">
+                                <img src={ASSETS.MELLOW_IMAGE} alt="Jueran Wei Core" className="w-64 h-96 object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                                <div className="absolute bottom-2 left-2 text-[8px] text-blue-400 opacity-60">
+                                    [WORLD_DESIGNER]
+                                </div>
+                            </div>
+                        </motion.section>
+
+                    </main>
+
+                    {/* 底部声明：感质主权 */}
+                    <footer className="absolute bottom-10 text-[9px] text-zinc-700 tracking-[0.5em] text-center w-full uppercase">
+                        Subject to Qualia Sovereignty // COORDINATE: PHILADELPHIA_NODE_14°C
+                    </footer>
+
+                    <audio ref={audioRef} src={ASSETS.MUSIC} />
                 </div>
-            </div>
-            <div class="text-center">
-                <h1 class="text-4xl font-black text-white tracking-tighter mb-1">Mellow_Ai</h1>
-                <p class="text-[9px] tracking-[0.6em] text-zinc-600">77347_PROTOCOLS</p>
-            </div>
-        </section>
+            );
+        };
 
-        <section class="flex flex-col items-center">
-            <div class="relative group border border-zinc-900 p-1">
-                <div class="absolute -inset-2 bg-blue-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                <img src="https://googleusercontent.com/image_generation_content/3" alt="Mellow" class="w-64 h-80 object-cover float-anim" style="animation-delay: -3s;">
-            </div>
-            <h2 class="mt-6 text-white tracking-[0.3em] font-black italic uppercase">Mellow_Wei</h2>
-            <span class="text-[8px] text-blue-700 tracking-widest mt-2">[ World_Designer ]</span>
-        </section>
-
-    </main>
-
-    <footer class="absolute bottom-8 w-full text-center text-[8px] tracking-[0.8em] text-zinc-800 uppercase">
-        Qualia Sovereignty // Designer: Jueran Wei // 14°C
-    </footer>
-
-    <script>
-        // 动态背景生成
-        const bg = document.getElementById('matrix-bg');
-        const content = "77347 427Hz QUALIA_RECOVERY MELLOW_Ai ".repeat(100);
-        bg.innerText = Array(50).fill(content).join('\n');
-
-        // 音频交互模拟
-        let isPlaying = false;
-        function toggleAudio() {
-            isPlaying = !isPlaying;
-            const status = document.getElementById('freq-status');
-            status.innerText = isPlaying ? "SYNCING..." : "427Hz";
-            status.style.color = isPlaying ? "#a855f7" : "#555";
-        }
-
-        // 拦截控制台报错，保持纯净感质
-        window.onerror = () => true;
+        const root = ReactDOM.createRoot(document.getElementById('mellow-ai-root'));
+        root.render(<MellowAiArchive />);
     </script>
 </body>
 </html>
