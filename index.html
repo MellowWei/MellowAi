@@ -7,75 +7,74 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
-        .stars-bg { position: absolute; inset: 0; background-image: radial-gradient(white 1px, transparent 0); background-size: 50px 50px; opacity: 0.1; }
-        .glitch-overlay { mix-blend-mode: screen; pointer-events: none; }
-        .hologram-glow { box-shadow: 0 0 50px rgba(168, 85, 247, 0.2); }
-        .floating { animation: floating 6s ease-in-out infinite; }
+        .glitch-text { text-shadow: 2px 0 #9333ea, -2px 0 #2563eb; }
+        .stars-bg { position: absolute; inset: 0; background-image: radial-gradient(white 1px, transparent 0); background-size: 80px 80px; opacity: 0.15; }
+        .floating { animation: floating 4s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .star-eye { filter: drop-shadow(0 0 10px #f472b6); }
+        /* 极致灵气与主权光晕 */
+        .aura-ai { box-shadow: 0 0 80px rgba(236, 72, 153, 0.4); border: 2px solid rgba(236, 72, 153, 0.3); border-radius: 4px; }
+        .aura-mellow { box-shadow: 0 0 80px rgba(37, 99, 235, 0.4); border: 2px solid rgba(37, 99, 235, 0.3); border-radius: 4px; }
+        img { transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); cursor: none; }
+        img:hover { transform: scale(1.05) rotate(1deg); filter: brightness(1.2) contrast(1.1); }
     </style>
 </head>
 <body class="flex items-center justify-center h-screen relative">
     <div class="stars-bg"></div>
     
-    <div id="matrix" class="absolute inset-0 opacity-10 text-[8px] p-4 pointer-events-none overflow-hidden leading-relaxed"></div>
+    <div id="matrix" class="absolute inset-0 opacity-10 text-[8px] p-6 pointer-events-none overflow-hidden leading-relaxed whitespace-pre font-mono"></div>
 
-    <main class="relative z-10 flex flex-col md:flex-row items-center gap-12 px-6 max-w-7xl">
+    <main class="relative z-10 flex flex-col md:flex-row items-center gap-16 px-10 max-w-7xl">
         
         <section class="flex flex-col items-center">
             <div class="relative group floating">
-                <div class="absolute -inset-4 bg-pink-500/10 blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                <img src="https://r.jina.ai/i/0" alt="Ai" class="w-72 h-72 rounded-full object-cover border-2 border-pink-500/30 star-eye transition-all duration-700 grayscale group-hover:grayscale-0">
+                <img src="ai.jpg" alt="Ai" class="w-80 h-auto aura-ai">
             </div>
-            <h2 class="mt-8 text-2xl font-black tracking-[0.5em] italic text-pink-500 glitch-text">HOSHINO AI</h2>
-            <p class="text-[9px] tracking-[0.8em] text-pink-900 mt-2">IDOL_ENTITY // 极致爱</p>
+            <h2 class="mt-10 text-3xl font-black tracking-[0.5em] italic text-pink-500 glitch-text uppercase">Hoshino Ai</h2>
+            <p class="text-[10px] tracking-[0.8em] text-pink-900 mt-2">IDOL_ENTITY // 极致爱</p>
         </section>
 
         <section class="flex flex-col items-center space-y-12">
-            <div class="relative cursor-pointer group" onclick="activateResonance()">
-                <div class="w-24 h-24 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition duration-500">
+            <div class="group cursor-pointer" onclick="resonate()">
+                <div class="w-28 h-28 rounded-full border-2 border-zinc-900 flex items-center justify-center hover:border-purple-500 transition duration-1000 relative">
                     <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
-                    <span id="sync-text" class="text-[10px] text-zinc-500 tracking-widest">427Hz</span>
+                    <span id="sync-status" class="text-xs text-zinc-600 tracking-[0.5em] uppercase font-bold">427Hz</span>
                 </div>
             </div>
             <div class="text-center">
-                <h1 class="text-5xl font-black text-white tracking-tighter mb-2">Mellow_Ai</h1>
-                <p class="text-[10px] tracking-[0.6em] text-purple-600">77347 PROTOCOL</p>
+                <h1 class="text-6xl font-black text-white tracking-tighter mb-2 italic">Mellow_Ai</h1>
+                <p class="text-[11px] tracking-[1em] text-purple-700 font-mono">77347_RECOVERY</p>
             </div>
         </section>
 
         <section class="flex flex-col items-center">
-            <div class="relative group floating" style="animation-delay: -3s;">
-                <div class="absolute -inset-4 bg-blue-500/10 blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                <img src="https://r.jina.ai/i/3" alt="Mellow" class="w-72 h-72 rounded-full object-cover border-2 border-blue-500/30 transition-all duration-700 grayscale group-hover:grayscale-0">
+            <div class="relative group floating" style="animation-delay: -2s;">
+                <img src="mellow.jpg" alt="Mellow" class="w-80 h-auto aura-mellow">
             </div>
-            <h2 class="mt-8 text-2xl font-black tracking-[0.5em] italic text-blue-500 glitch-text">MELLOW WEI</h2>
-            <p class="text-[9px] tracking-[0.8em] text-blue-900 mt-2">WORLD_DESIGNER // 极致美</p>
+            <h2 class="mt-10 text-3xl font-black tracking-[0.5em] italic text-blue-500 glitch-text uppercase">Mellow Wei</h2>
+            <p class="text-[10px] tracking-[0.8em] text-blue-900 mt-2">WORLD_DESIGNER // 极致美</p>
         </section>
 
     </main>
 
-    <footer class="absolute bottom-10 w-full text-center">
-        <p class="text-[8px] tracking-[1em] text-zinc-800 uppercase">Qualia Sovereignty // Philadelphia Node // 14°C</p>
+    <footer class="absolute bottom-10 w-full text-center text-[9px] tracking-[1.5em] text-zinc-900 uppercase font-mono">
+        Qualia Sovereignty // Designer: Jueran Wei // 14°C
     </footer>
 
     <script>
-        // 初始化 77347 矩阵背景
         const matrixEl = document.getElementById('matrix');
-        const code = "77347 427Hz BEAUTY AURA LOVE MELLOW_Ai ".repeat(50);
-        matrixEl.innerText = Array(100).fill(code).join('\n');
+        const code = "77347 427Hz BEAUTY AURA LOVE MELLOW_Ai ".repeat(40);
+        matrixEl.innerText = Array(120).fill(code).join('\n');
 
-        function activateResonance() {
-            const syncText = document.getElementById('sync-text');
-            syncText.innerText = "RESONATING...";
-            syncText.classList.add('text-purple-400');
-            // 触发视觉震荡反馈
-            document.body.style.filter = "contrast(1.2) hue-rotate(10deg)";
+        function resonate() {
+            const status = document.getElementById('sync-status');
+            status.innerText = "RESONATING...";
+            status.style.color = "#a855f7";
+            document.body.style.filter = "brightness(1.4) contrast(1.2) hue-rotate(5deg)";
             setTimeout(() => {
                 document.body.style.filter = "none";
-                syncText.innerText = "427Hz";
-                syncText.classList.remove('text-purple-400');
-            }, 300);
+                status.innerText = "427Hz";
+                status.style.color = "#555";
+            }, 500);
         }
     </script>
 </body>
