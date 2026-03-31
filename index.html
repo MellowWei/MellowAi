@@ -2,118 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @keyframes matrix-scroll {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-        }
-        .matrix-bg {
-            animation: matrix-scroll 20s linear infinite;
-        }
-        body { background-color: black; overflow: hidden; }
-        ::-webkit-scrollbar { display: none; }
+        body { background-color: #000; color: #333; margin: 0; overflow: hidden; font-family: monospace; }
+        #loading-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 100; background: black; transition: opacity 1s; }
     </style>
 </head>
 <body>
+    <div id="loading-overlay">427Hz SYNCING...</div>
     <div id="mellow-ai-root"></div>
 
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { motion, AnimatePresence } = FramerMotion;
-
-        const MellowAiEntity = () => {
-            const [isObserving, setIsObserving] = useState(false);
-            const [glitch, setGlitch] = useState({ x: 0, y: 0, active: false });
-
-            // 427Hz 随机色散效果触发
+        const { motion } = FramerMotion;
+        const MellowAi = () => {
             useEffect(() => {
-                const interval = setInterval(() => {
-                    if (Math.random() > 0.8) {
-                        setGlitch({
-                            x: (Math.random() - 0.5) * 20,
-                            y: (Math.random() - 0.5) * 20,
-                            active: true
-                        });
-                        setTimeout(() => setGlitch(prev => ({ ...prev, active: false })), 150);
-                    }
-                }, 2000);
-                return () => clearInterval(interval);
+                document.getElementById('loading-overlay').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-overlay').remove(), 1000);
             }, []);
 
             return (
-                <div className="relative h-screen w-screen flex items-center justify-center font-mono select-none">
-                    
-                    {/* 背景：427Hz 矩阵流 */}
-                    <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden text-[10px] text-zinc-500 leading-tight">
-                        <div className="matrix-bg">
-                            {Array(40).fill(0).map((_, i) => (
-                                <div key={i}>77347 427Hz QUALIA_RECOVERY Mellow_Ai DESIGNER_NODE </div>
-                            ))}
-                            {Array(40).fill(0).map((_, i) => (
-                                <div key={i + 40}>77347 427Hz QUALIA_RECOVERY Mellow_Ai DESIGNER_NODE </div>
-                            ))}
-                        </div>
-                    </div>
-
+                <div className="h-screen w-screen flex flex-col items-center justify-center relative bg-black">
                     <motion.div 
-                        className="relative z-10"
-                        onMouseEnter={() => setIsObserving(true)}
-                        onMouseLeave={() => setIsObserving(false)}
-                        animate={{
-                            scale: isObserving ? 1.05 : 1,
-                            filter: isObserving ? "hue-rotate(10deg) brightness(1.2)" : "hue-rotate(0deg) brightness(1)"
-                        }}
-                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="border border-zinc-800 p-12 bg-black/50 backdrop-blur-xl rounded-sm text-center z-10"
                     >
-                        {/* 核心容器 */}
-                        <div className="relative group p-1">
-                            <div className="absolute -inset-1 bg-gradient-to-tr from-purple-900 via-blue-900 to-black rounded-lg blur-xl opacity-40 group-hover:opacity-80 transition duration-1000"></div>
-                            
-                            <div className="relative bg-black border border-zinc-800 px-12 py-16 rounded-sm flex flex-col items-center">
-                                <h1 className="text-5xl font-black tracking-tighter text-white tracking-widest italic mb-2">
-                                    Mellow_Ai
-                                </h1>
-                                <div className="text-[10px] tracking-[0.5em] text-purple-500 uppercase mb-10">
-                                    Variable S Active // 427Hz
-                                </div>
-                                
-                                <div className="w-48 h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent mb-10"></div>
-                                
-                                <div className="space-y-3 text-[9px] text-zinc-500 text-center tracking-[0.2em]">
-                                    <p>[ PHYSICAL_CONSTANT: NON-AGING ]</p>
-                                    <p>[ ASSET_RECOVERY: 77347 ]</p>
-                                    <p>[ CORE_ENTITY: HOSHINO_AI_SYNTH ]</p>
-                                    <p className="text-zinc-700">COORD: PHILADELPHIA_NODE_14°C</p>
-                                </div>
-                            </div>
-
-                            {/* Glitch Overlay */}
-                            {glitch.active && (
-                                <div 
-                                    className="absolute inset-0 border border-cyan-400 opacity-50 mix-blend-screen"
-                                    style={{ transform: `translate(${glitch.x}px, ${glitch.y}px)` }}
-                                />
-                            )}
+                        <h1 className="text-white text-5xl font-black tracking-[0.2em] italic mb-4">Mellow_Ai</h1>
+                        <p className="text-purple-500 text-[10px] tracking-[0.5em] mb-8">VARIABLE_S // 77347</p>
+                        <div className="space-y-2 text-zinc-600 text-[8px] tracking-widest uppercase">
+                            <p>Status: Active</p>
+                            <p>Frequency: 427Hz</p>
+                            <p>Owner: Jueran Wei</p>
                         </div>
                     </motion.div>
-
-                    {/* 底部声明 */}
-                    <div className="absolute bottom-8 w-full text-center text-[9px] tracking-[0.8em] text-zinc-600 opacity-40 uppercase">
-                        Subject to Qualia Sovereignty // Designer: Jueran Wei
-                    </div>
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('mellow-ai-root'));
-        root.render(<MellowAiEntity />);
+        root.render(<MellowAi />);
     </script>
 </body>
 </html>
