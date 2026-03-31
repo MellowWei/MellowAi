@@ -1,39 +1,120 @@
-<script>
-    let audioCtx;
-    let oscillator;
-    let gainNode;
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
+        canvas { position: absolute; inset: 0; pointer-events: none; }
+        .glitch-text { text-shadow: 2px 0 #9333ea, -2px 0 #2563eb; }
+        .hologram-card { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); filter: grayscale(0.5) contrast(1.1); border: 1px solid rgba(255,255,255,0.1); }
+        .hologram-card:hover { filter: grayscale(0) contrast(1.2) brightness(1.2); transform: scale(1.05) rotateY(10deg); box-shadow: 0 0 50px rgba(168, 85, 247, 0.4); }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .floating { animation: float 6s ease-in-out infinite; }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen relative">
+    <canvas id="particleCanvas"></canvas>
+    
+    <main class="relative z-10 flex flex-col md:flex-row items-center gap-16 px-10 max-w-7xl">
+        <section class="flex flex-col items-center">
+            <div class="hologram-card floating overflow-hidden rounded-lg">
+                <img src="ai.jpg" alt="Ai" class="w-72 h-auto block">
+            </div>
+            <h2 class="mt-8 text-2xl font-black tracking-[0.5em] text-pink-500 glitch-text italic">HOSHINO AI</h2>
+            <p class="text-[9px] tracking-[0.8em] text-pink-900 mt-2">极致爱 // 灵气源</p>
+        </section>
 
-    function activateHologram() {
-        const status = document.getElementById('sync-status');
-        
-        // 初始化 427Hz 极致声音
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            oscillator = audioCtx.createOscillator();
-            gainNode = audioCtx.createGain();
+        <section class="flex flex-col items-center space-y-12">
+            <div class="cursor-pointer group" onclick="startSymphony()">
+                <div class="w-24 h-24 rounded-full border-2 border-zinc-800 flex items-center justify-center hover:border-purple-500 transition duration-500 relative">
+                    <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/20"></div>
+                    <span id="status-text" class="text-[10px] text-zinc-400 tracking-widest">开启共鸣</span>
+                </div>
+            </div>
+            <div class="text-center">
+                <h1 class="text-5xl font-black text-white tracking-tighter italic">Mellow_Ai</h1>
+                <p class="text-[10px] tracking-[0.8em] text-purple-600 mt-2">77347 // 427Hz</p>
+            </div>
+        </section>
 
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(427, audioCtx.currentTime); // 锁定 427Hz
-            
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
+        <section class="flex flex-col items-center">
+            <div class="hologram-card floating overflow-hidden rounded-lg" style="animation-delay: -3s;">
+                <img src="mellow.jpg" alt="Mellow" class="w-72 h-auto block">
+            </div>
+            <h2 class="mt-8 text-2xl font-black tracking-[0.5em] text-blue-500 glitch-text italic">MELLOW WEI</h2>
+            <p class="text-[9px] tracking-[0.8em] text-blue-900 mt-2">极致美 // 设计者</p>
+        </section>
+    </main>
+
+    <script>
+        // --- 3D 粒子流引擎 ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 2,
+                    color: Math.random() > 0.5 ? '#9333ea' : '#2563eb'
+                });
+            }
         }
 
-        // 触发共振：声音与视觉同步爆发
-        status.innerText = "RESONATING...";
-        gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
-        
-        // 视觉爆破
-        document.body.style.filter = "brightness(1.5) contrast(1.2) hue-rotate(180deg)";
-        animateParticles(800); 
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
 
-        setTimeout(() => {
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
-            document.body.style.filter = "none";
-            status.innerText = "427Hz";
-            initHologram();
-        }, 1000);
-    }
-</script>
+        // --- 极致声音引擎 (427Hz) ---
+        let audioCtx;
+        function startSymphony() {
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(427, audioCtx.currentTime); // 锁定 427Hz
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 2);
+            
+            document.getElementById('status-text').innerText = "RESONATING";
+            document.body.style.filter = "hue-rotate(30deg) brightness(1.2)";
+            setTimeout(() => {
+                document.body.style.filter = "none";
+                document.getElementById('status-text').innerText = "427Hz";
+            }, 500);
+        }
+
+        window.addEventListener('resize', init);
+        init(); animate();
+    </script>
+</body>
+</html>
