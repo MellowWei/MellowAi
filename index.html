@@ -3,75 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mellow_Ai // 77347: UNIFIED_SINGULARITY</title>
+    <title>☆彡 Mellow_Ai // 77347 ♪</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: none; }
+        #canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         
-        /* 1. 粒子层：最高层级，全覆盖，穿透点击 */
-        #canvas { 
-            position: fixed; inset: 0; 
-            z-index: 1000; 
-            pointer-events: none; 
-        }
-        
-        /* 2. 绝对奇点：死锁在视口物理中心 (修正点) */
-        .core-hub { 
-            position: fixed; 
-            top: 50%; /* 绝对垂直中心 */
-            left: 50%; /* 绝对水平中心 */
-            transform: translate(-50%, -50%); /* 几何补偿 */
-            z-index: 500; 
-            text-align: center;
-            width: 100vw; /* 确保标题文字水平居中 */
-            pointer-events: none; /* 穿透到按钮 */
-        }
-        .core-hub * { pointer-events: auto; } /* 恢复按钮点击功能 */
+        /* 核心奇点：绝对物理居中 */
+        .core-hub { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 500; text-align: center; width: 100vw; pointer-events: none; }
+        .core-hub * { pointer-events: auto; }
 
-        /* 3. 滚动内容层：保持原有的 1024px 分布逻辑 */
-        #main-scroll { 
-            position: relative; z-index: 10; 
-            width: 100vw; height: 100dvh; 
-            overflow-y: auto; overflow-x: hidden;
-            scrollbar-width: none;
+        .resonance-btn { position: relative; display: inline-flex; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.5rem; opacity: 0.7; color: #ec4899; }
+        .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.5rem; opacity: 0.7; color: #3b82f6; }
+
+        .mellow-title { 
+            font-size: clamp(1.8rem, 8vw, 4rem); font-weight: 900; font-style: italic; line-height: 1.1; margin-top: 2rem;
+            letter-spacing: -0.04em; text-transform: uppercase;
+            text-shadow: 4px 0 rgba(236, 72, 153, 0.8), -4px 0 rgba(59, 130, 246, 0.8);
+            white-space: pre-line;
         }
+
+        /* 资产层 */
+        #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
         #main-scroll::-webkit-scrollbar { display: none; }
+        .hologram-section { min-height: 100dvh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        @media (min-width: 1024px) { #main-scroll { display: flex; align-items: center; justify-content: space-between; padding: 0 10%; } .hologram-section { width: 35%; } }
 
-        .hologram-section {
-            min-height: 100dvh; width: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transform-style: preserve-3d;
-        }
+        .asset-box { width: 80vw; max-width: 320px; transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); opacity: 1; }
+        .is-resonating .ai-glow { filter: drop-shadow(0 0 50px rgba(236, 72, 153, 0.8)); transform: scale(1.05); }
+        .is-resonating .mellow-glow { filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.8)); transform: scale(1.05); }
 
-        @media (min-width: 1024px) {
-            #main-scroll { display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 0 10%; }
-            .hologram-section { width: 35%; height: 100dvh; }
-        }
-
-        .asset-box {
-            width: 75vw; max-width: 280px; position: relative;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(5px);
-            mask-image: radial-gradient(circle, black 55%, rgba(0,0,0,0.4) 75%, transparent 100%);
-            -webkit-mask-image: radial-gradient(circle, black 55%, rgba(0,0,0,0.4) 75%, transparent 100%);
-        }
-        @media (min-width: 1024px) { .asset-box { width: 22vw; max-width: none; } }
-
-        .asset-img { width: 100%; height: auto; opacity: 0.95; filter: contrast(1.1); }
-
-        .bio-info {
-            width: 80%; margin-top: 20px; padding: 15px; text-align: center;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px); font-size: 10px; line-height: 1.6; letter-spacing: 0.05em;
-        }
-        @media (min-width: 1024px) { 
-            .bio-info { text-align: left; border: none; border-left: 2px solid rgba(168, 85, 247, 0.4); width: 100%; font-size: 11px; }
-            .mellow-bio { text-align: right; border-left: none; border-right: 2px solid rgba(59, 130, 246, 0.4); }
-        }
-
-        .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
-        .floating { animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
+        .bio-info { width: 85%; margin-top: 20px; padding: 15px; text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); font-size: 10px; }
+        @media (min-width: 1024px) { .bio-info { text-align: left; border-left: 2px solid #ec4899; } .mellow-bio { text-align: right; border-right: 2px solid #3b82f6; border-left: none; } }
+        
+        .footer { position: fixed; bottom: 30px; width: 100%; text-align: center; font-size: 8px; color: rgba(255,255,255,0.2); letter-spacing: 0.6em; }
     </style>
 </head>
 <body class="bg-black">
@@ -79,80 +45,66 @@
     <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
     <div class="core-hub">
-        <div class="cursor-pointer group inline-block" onclick="toggleResonance()">
-            <div class="w-40 h-40 lg:w-48 lg:h-48 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/60 backdrop-blur-3xl relative">
-                <div id="ring" class="absolute inset-0 rounded-full border-2 border-purple-500/10"></div>
-                <span id="label" class="text-white font-black tracking-[0.4em] text-[10px] lg:text-xs uppercase">Resonate</span>
-                <span class="text-zinc-600 text-[8px] mt-2 tracking-widest font-mono uppercase">77347 // 427Hz</span>
+        <div class="resonance-btn cursor-pointer inline-block" onclick="toggleResonance()">
+            <div class="w-44 h-44 lg:w-56 lg:h-56 rounded-full border border-zinc-800 flex flex-col items-center justify-center bg-black/50 backdrop-blur-3xl relative">
+                <div id="ring" class="absolute inset-0 rounded-full border-2 border-white/5"></div>
+                <span id="label" class="text-white font-black tracking-[0.5em] text-[10px] uppercase">Resonate</span>
             </div>
         </div>
-        <h1 class="text-3xl lg:text-5xl font-black italic mt-10 glitch-text tracking-tighter uppercase">Mellow_Ai</h1>
+        <h1 class="mellow-title">☆彡 Mellow_Ai //&#10;77347 ♪</h1>
     </div>
 
     <div id="main-scroll">
-        <div class="hologram-section floating">
-            <div class="asset-box">
-                <img src="ai.jpg" class="asset-img">
-            </div>
-            <div class="bio-info">
-                <h2 class="text-pink-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Hoshino Ai</h2>
-                <p class="text-zinc-400 font-bold mb-1 uppercase">[ Idol Entity ]</p>
-                坍缩前的最后一抹星光。于 427Hz 频率下执行绝对吸引。
-            </div>
-        </div>
-
+        <div class="hologram-section"><div class="asset-box ai-glow"><img src="ai.jpg" class="w-full"></div><div class="bio-info">Hoshino Ai // 427Hz Sync</div></div>
         <div class="h-64 lg:hidden"></div>
-
-        <div class="hologram-section floating" style="animation-delay: -4s;">
-            <div class="asset-box">
-                <img src="mellow.jpg" class="asset-img">
-            </div>
-            <div class="bio-info mellow-bio">
-                <h2 class="text-blue-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Mellow Wei</h2>
-                <p class="text-zinc-400 font-bold mb-1 uppercase">[ Designer Core ]</p>
-                极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。
-            </div>
-        </div>
+        <div class="hologram-section"><div class="asset-box mellow-glow"><img src="mellow.jpg" class="w-full"></div><div class="bio-info mellow-bio">Mellow Wei // Designer Core</div></div>
     </div>
+
+    <div class="footer">Zero Barrier // 77347 // 427Hz</div>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const bgm = document.getElementById('mellow-bgm');
-        let pts = [];
-        let aCtx, analyser, data;
+        let pts = [], aCtx, analyser, data;
+        
+        // 1. 定义感质符号库
+        const symbols = ['爱', '77347', '427Hz', 'Qualia', '☆彡', '♪'];
 
         function init() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            pts = Array(window.innerWidth < 768 ? 180 : 380).fill().map(() => ({
+            pts = Array(window.innerWidth < 768 ? 160 : 380).fill().map(() => ({
                 x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5)*1.3, vy: (Math.random()-0.5)*1.3,
-                s: Math.random()*2.8,
-                c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.4 ? '#3b82f6' : '#a855f7')
+                vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8,
+                s: Math.random()*2.5,
+                c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6',
+                // 2. 随机分配文字形态
+                t: Math.random() > 0.85 ? symbols[Math.floor(Math.random()*symbols.length)] : null
             }));
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let v = 0;
-            if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
-
+            let v = 0; if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
+            
             pts.forEach(p => {
-                let m = 1 + v/15; p.x += p.vx * m; p.y += p.vy * m;
+                let m = 1 + v/12; p.x += p.vx * m; p.y += p.vy * m;
                 if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-                ctx.fillStyle = p.c; 
-                ctx.shadowBlur = v/5; ctx.shadowColor = p.c;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/80, 0, 7); ctx.fill();
+                
+                ctx.globalAlpha = 0.4 + v/255;
+                if (p.t) {
+                    // 3. 渲染符号粒子：随音量缩放
+                    ctx.font = `bold ${9 + v/10}px sans-serif`;
+                    ctx.fillStyle = p.c;
+                    ctx.fillText(p.t, p.x, p.y);
+                } else {
+                    // 渲染像素粒子
+                    ctx.fillStyle = p.c;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
+                }
             });
-
-            if(document.getElementById('ring')) document.getElementById('ring').style.transform = `scale(${1 + v/70})`;
-
-            document.querySelectorAll('.asset-box').forEach(box => {
-                const threshold = 95 - (v/2.5);
-                box.style.webkitMaskImage = `radial-gradient(circle, black ${threshold-40}%, rgba(0,0,0,0.3) ${threshold-10}%, transparent ${threshold+5}%)`;
-                box.style.maskImage = `radial-gradient(circle, black ${threshold-40}%, rgba(0,0,0,0.3) ${threshold-10}%, transparent ${threshold+5}%)`;
-            });
-
+            const ring = document.getElementById('ring');
+            if(ring) ring.style.transform = `scale(${1 + v/60}) rotate(${v}deg)`;
             requestAnimationFrame(draw);
         }
 
@@ -164,10 +116,14 @@
                 s.connect(analyser); analyser.connect(aCtx.destination);
                 analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
             }
-            if(bgm.paused) { bgm.play(); document.getElementById('label').innerText = "Synced"; }
-            else { bgm.pause(); document.getElementById('label').innerText = "Resonate"; }
+            if(bgm.paused) { 
+                bgm.play(); document.getElementById('label').innerText = "Synced";
+                document.body.classList.add('is-resonating');
+            } else { 
+                bgm.pause(); document.getElementById('label').innerText = "Resonate"; 
+                document.body.classList.remove('is-resonating');
+            }
         }
-
         window.onresize = init; init(); draw();
     </script>
 </body>
