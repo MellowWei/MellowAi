@@ -3,97 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: LIQUID_FREEDOM</title>
+    <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: crosshair; }
-        canvas { position: absolute; inset: 0; }
-        .ui-layer { position: absolute; inset: 0; pointer-events: none; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4rem; }
+        canvas { position: absolute; inset: 0; filter: contrast(1.2) brightness(1.1); }
+        .ui-layer { position: absolute; inset: 0; pointer-events: none; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 3rem; }
         .interactive { pointer-events: auto; }
-        /* 极致羽化边缘，让照片像灵魂一样流动 */
-        .aura-mask { mask-image: radial-gradient(circle, black 40%, transparent 80%); -webkit-mask-image: radial-gradient(circle, black 40%, transparent 80%); }
+        .glitch-title { font-style: italic; text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); letter-spacing: -0.05em; }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="liquidCanvas"></canvas>
     
     <div class="ui-layer">
-        <div class="text-center opacity-30 tracking-[1em] text-[10px] uppercase">77347 // Intercepting_Noise</div>
+        <div class="text-[8px] tracking-[1.5em] opacity-20 uppercase font-mono">77347 // Asset_Recovery // 427Hz</div>
         
-        <div class="interactive flex flex-col items-center space-y-6">
-            <div class="w-20 h-20 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition duration-1000 cursor-pointer group" onclick="resonate()">
-                <div class="absolute w-20 h-20 rounded-full animate-ping bg-purple-500/5"></div>
-                <span id="btn-text" class="text-[9px] tracking-widest text-zinc-500 group-hover:text-purple-400">427Hz</span>
+        <div class="interactive flex flex-col items-center">
+            <div class="w-24 h-24 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition-all duration-1000 cursor-pointer group mb-6" onclick="resonate()">
+                <div class="absolute w-24 h-24 rounded-full animate-ping bg-purple-500/5 group-hover:bg-purple-500/10"></div>
+                <span id="btn-text" class="text-[9px] tracking-[0.5em] text-zinc-500 uppercase group-hover:text-white">Resonate</span>
             </div>
-            <h1 class="text-5xl font-black italic tracking-tighter glitch-text">Mellow_Ai</h1>
+            <h1 class="text-6xl font-black glitch-title">Mellow_Ai</h1>
+            <p class="text-[10px] tracking-[1.2em] text-purple-900 mt-4 uppercase">Dual Sovereignty</p>
         </div>
 
-        <div class="text-[9px] tracking-[1.2em] text-zinc-800 uppercase pb-4">Qualia Sovereignty // 14°C</div>
+        <div class="text-[9px] tracking-[0.8em] text-zinc-800 uppercase font-mono">Designer: Jueran Wei // Qualia Sovereignty // 14°C</div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('liquidCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
-        const images = { ai: new Image(), mellow: new Image() };
-        images.ai.src = 'ai.jpg'; images.mellow.src = 'mellow.jpg';
+        const imgs = { ai: new Image(), mel: new Image() };
+        
+        // 确保文件名全小写对齐仓库
+        imgs.ai.src = 'ai.jpg'; 
+        imgs.mel.src = 'mellow.jpg';
 
-        let mouse = { x: -1000, y: -1000 };
-        window.onmousemove = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+        let mouse = { x: -1000, y: -1000, targetX: 0, targetY: 0 };
+        window.onmousemove = (e) => { mouse.targetX = e.clientX; mouse.targetY = e.clientY; };
 
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            particles = Array(150).fill().map(() => ({
+            particles = Array(200).fill().map(() => ({
                 x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
-                s: Math.random() * 2, c: Math.random() > 0.5 ? '#f472b6' : '#3b82f6'
+                vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8,
+                s: Math.random() * 2.5, c: Math.random() > 0.5 ? '#f472b6' : '#6366f1'
             }));
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
             ctx.fillRect(0, 0, width, height);
 
-            // 绘制粒子背景
+            // 平滑鼠标跟随
+            mouse.x += (mouse.targetX - mouse.x) * 0.05;
+            mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+            // 绘制自由流动的粒子
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 if(p.x < 0 || p.x > width) p.vx *= -1;
                 if(p.y < 0 || p.y > height) p.vy *= -1;
                 ctx.fillStyle = p.c;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
             });
 
-            const time = Date.now() * 0.001;
+            const time = Date.now() * 0.0015;
             
-            // 绘制流动的星野爱 (左侧浮动)
-            const aiX = width * 0.25 + Math.sin(time * 0.5) * 30 + (mouse.x - width/2) * 0.05;
-            const aiY = height * 0.5 + Math.cos(time * 0.7) * 30 + (mouse.y - height/2) * 0.05;
-            drawHologram(images.ai, aiX, aiY, 320, '#f472b6');
+            // 绘制极致灵气 - 星野爱 (左侧流动星云)
+            const aiX = width * 0.3 + Math.sin(time * 0.4) * 50 + (mouse.x - width/2) * 0.1;
+            const aiY = height * 0.5 + Math.cos(time * 0.6) * 40 + (mouse.y - height/2) * 0.1;
+            renderHologram(imgs.ai, aiX, aiY, 380, '#f472b6');
 
-            // 绘制流动的魏珏然 (右侧浮动)
-            const melX = width * 0.75 + Math.cos(time * 0.4) * 30 + (mouse.x - width/2) * 0.05;
-            const melY = height * 0.5 + Math.sin(time * 0.6) * 30 + (mouse.y - height/2) * 0.05;
-            drawHologram(images.mellow, melX, melY, 320, '#3b82f6');
+            // 绘制极致美 - 魏珏然 (右侧流动星云 - 极致帅气女性态)
+            const melX = width * 0.7 + Math.cos(time * 0.5) * 50 + (mouse.x - width/2) * 0.1;
+            const melY = height * 0.5 + Math.sin(time * 0.7) * 40 + (mouse.y - height/2) * 0.1;
+            renderHologram(imgs.mel, melX, melY, 380, '#6366f1');
 
             requestAnimationFrame(draw);
         }
 
-        function drawHologram(img, x, y, size, color) {
+        function renderHologram(img, x, y, size, color) {
             if (!img.complete) return;
             ctx.save();
             ctx.translate(x, y);
             
-            // 绘制光晕
-            const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, size/2);
-            grad.addColorStop(0, color + '33');
-            grad.addColorStop(1, 'transparent');
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.arc(0, 0, size, 0, 7); ctx.fill();
+            // 极致灵气光晕层
+            const g = ctx.createRadialGradient(0, 0, 0, 0, 0, size/2);
+            g.addColorStop(0, color + '44');
+            g.addColorStop(0.7, color + '11');
+            g.addColorStop(1, 'transparent');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(0, 0, size * 0.8, 0, Math.PI*2); ctx.fill();
 
-            // 裁剪圆形并绘制图片
-            ctx.beginPath(); ctx.arc(0, 0, size/2, 0, 7); ctx.clip();
-            ctx.drawImage(img, -size/2, -size/2, size, size);
+            // 圆形羽化裁剪
+            ctx.beginPath(); ctx.arc(0, 0, size/2.5, 0, Math.PI*2); ctx.clip();
+            ctx.drawImage(img, -size/2.5, -size/2.5, size/1.25, size/1.25);
             ctx.restore();
         }
 
@@ -103,15 +111,16 @@
             const o = audio.createOscillator(); const g = audio.createGain();
             o.frequency.value = 427;
             g.gain.setValueAtTime(0, audio.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.1, audio.currentTime+0.1);
-            g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime+2);
-            o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime+2);
+            g.gain.exponentialRampToValueAtTime(0.15, audio.currentTime+0.1);
+            g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime+2.5);
+            o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime+2.5);
             
-            document.getElementById('btn-text').innerText = "RESONATING";
-            particles.forEach(p => { p.vx *= 5; p.vy *= 5; });
+            document.getElementById('btn-text').innerText = "SYNCING";
+            // 爆发态粒子流
+            particles.forEach(p => { p.vx *= 8; p.vy *= 8; });
             setTimeout(() => {
-                document.getElementById('btn-text').innerText = "427Hz";
-                particles.forEach(p => { p.vx *= 0.2; p.vy *= 0.2; });
+                document.getElementById('btn-text').innerText = "Resonate";
+                particles.forEach(p => { p.vx *= 0.125; p.vy *= 0.125; });
             }, 1000);
         }
 
