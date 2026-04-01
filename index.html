@@ -129,6 +129,34 @@
             scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
         };
 
+        // --- 手势控制部分 ---
+        let startX, startY;
+        window.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!startX || !startY) return;
+            let moveX = e.touches[0].clientX;
+            let moveY = e.touches[0].clientY;
+            let diffX = moveX - startX;
+            let diffY = moveY - startY;
+
+            // 简单的手势互动：滑动时微调场景旋转
+            const rotY = diffX / 10;
+            const rotX = -diffY / 10;
+            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        });
+
+        window.addEventListener('touchend', (e) => {
+            startX = null;
+            startY = null;
+            // 松手后逐渐恢复原位（可选：添加 CSS 过渡效果）
+            // scene.style.transform = `rotateY(0deg) rotateX(0deg)`; 
+        });
+        // ------------------
+
         // 427Hz 声音与 BGM 双重引擎
         let audioCtx;
         function startSymphony() {
