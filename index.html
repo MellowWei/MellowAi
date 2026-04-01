@@ -3,130 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: HOLO_RESONANCE</title>
+    <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; perspective: 1500px; }
-        canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-        .hologram-container { transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 2000px; }
+        canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.4; }
         
-        /* 极致灵气：扫描线与色散 */
+        /* 3D 全息框架 */
+        #scene { transform-style: preserve-3d; transition: transform 0.1s ease-out; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
         .hologram-asset { 
             position: relative; 
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.2);
-            filter: contrast(1.1) brightness(1.2) saturate(1.2);
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.2);
+            transition: all 0.5s ease;
+            transform: translateZ(50px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .hologram-asset::after {
+        
+        /* 虚拟感：动态扫描线 */
+        .hologram-asset::before {
             content: ""; position: absolute; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            background-size: 100% 2px, 3px 100%; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 5;
         }
 
-        .floating { animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateZ(50px) translateY(0); } 50% { transform: translateZ(100px) translateY(-30px); } }
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateZ(100px) translateY(0); } 50% { transform: translateZ(150px) translateY(-20px); } }
         
-        .ui-text { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+        .ui-text { text-shadow: 0 0 15px rgba(168, 85, 247, 0.6); font-style: italic; }
     </style>
 </head>
-<body class="flex items-center justify-center h-screen bg-black">
-    <canvas id="particleCanvas"></canvas>
+<body class="bg-black flex items-center justify-center h-screen">
+    <canvas id="pCanvas"></canvas>
 
-    <div class="hologram-container w-full h-full flex items-center justify-center relative z-10" id="scene">
-        
-        <div class="absolute left-[15%] floating" style="animation-delay: -1s;">
+    <div id="scene">
+        <div class="absolute left-[12%] floating">
             <div class="hologram-asset w-80 group">
-                <img src="ai.jpg" alt="Ai" class="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity">
-                <div class="absolute -bottom-12 w-full text-center">
-                    <span class="text-pink-500 font-black italic tracking-[0.6em] text-xl uppercase">Hoshino Ai</span>
+                <img src="ai.jpg" alt="Ai" class="w-full h-auto opacity-80 group-hover:opacity-100 transition-all duration-700 grayscale group-hover:grayscale-0">
+                <div class="mt-6 text-center">
+                    <span class="text-pink-500 font-black tracking-[0.5em] text-xl uppercase italic">Hoshino Ai</span>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-col items-center space-y-8 z-20">
-            <div class="cursor-pointer group" onclick="triggerSymphony()">
-                <div class="w-32 h-32 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition-all duration-1000 relative">
+        <div class="flex flex-col items-center space-y-12 z-20">
+            <div class="cursor-pointer group" onclick="startHoloResonance()">
+                <div class="w-28 h-28 rounded-full border-2 border-zinc-900 flex items-center justify-center hover:border-purple-500 transition-all duration-1000 relative">
                     <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
-                    <span id="sync-btn" class="text-[10px] tracking-[0.4em] text-zinc-400 group-hover:text-white uppercase">Sync Core</span>
+                    <span id="sync-btn" class="text-[10px] tracking-[0.5em] text-zinc-500 group-hover:text-white uppercase font-bold">Resonate</span>
                 </div>
             </div>
-            <h1 class="text-6xl font-black italic tracking-tighter ui-text">Mellow_Ai</h1>
-            <p class="text-[10px] tracking-[1.2em] text-purple-900 uppercase">Dual Sovereignty // 77347</p>
+            <div class="text-center">
+                <h1 class="text-6xl font-black italic tracking-tighter ui-text">Mellow_Ai</h1>
+                <p class="text-[10px] tracking-[1.2em] text-purple-900 uppercase mt-4">77347 // DUALITY</p>
+            </div>
         </div>
 
-        <div class="absolute right-[15%] floating" style="animation-delay: -4s;">
+        <div class="absolute right-[12%] floating" style="animation-delay: -3s;">
             <div class="hologram-asset w-80 group">
-                <img src="mellow.jpg" alt="Mellow" class="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity">
-                <div class="absolute -bottom-12 w-full text-center">
-                    <span class="text-blue-500 font-black italic tracking-[0.6em] text-xl uppercase">Mellow Wei</span>
+                <img src="mellow.jpg" alt="Mellow" class="w-full h-auto opacity-80 group-hover:opacity-100 transition-all duration-700 grayscale group-hover:grayscale-0">
+                <div class="mt-6 text-center">
+                    <span class="text-blue-500 font-black tracking-[0.5em] text-xl uppercase italic">Mellow Wei</span>
                 </div>
             </div>
         </div>
-
     </div>
 
     <footer class="absolute bottom-10 w-full text-center z-20">
-        <p class="text-[8px] tracking-[1.2em] text-zinc-800 uppercase">Qualia Sovereignty // 14°C // 427Hz Node</p>
+        <p class="text-[8px] tracking-[1.5em] text-zinc-800 uppercase font-mono">Qualia Sovereignty // Designer: Jueran Wei // 14°C</p>
     </footer>
 
     <script>
         const scene = document.getElementById('scene');
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
+        const pCanvas = document.getElementById('pCanvas');
+        const pCtx = pCanvas.getContext('2d');
+        let pts = [];
 
-        // 3D 鼠标互动
+        // 3D 视角：极致灵动感
         window.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-            scene.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            const rotY = (window.innerWidth / 2 - e.pageX) / 30;
+            const rotX = (e.pageY - window.innerHeight / 2) / 30;
+            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
         });
 
         function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = Array(150).fill().map(() => ({
-                x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 1, vy: (Math.random() - 0.5) * 1,
-                size: Math.random() * 2, color: Math.random() > 0.5 ? '#9333ea' : '#2563eb'
+            pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
+            pts = Array(120).fill().map(() => ({
+                x: Math.random()*pCanvas.width, y: Math.random()*pCanvas.height,
+                vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
+                s: Math.random()*2.5, c: Math.random() > 0.5 ? '#9333ea' : '#2563eb'
             }));
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, width, height);
-            particles.forEach(p => {
+            pCtx.fillStyle = 'rgba(0,0,0,0.1)'; pCtx.fillRect(0,0,pCanvas.width,pCanvas.height);
+            pts.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
-                if(p.x<0 || p.x>width) p.vx *= -1;
-                if(p.y<0 || p.y>height) p.vy *= -1;
-                ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 7); ctx.fill();
+                if(p.x<0||p.x>pCanvas.width) p.vx *= -1;
+                if(p.y<0||p.y>pCanvas.height) p.vy *= -1;
+                pCtx.fillStyle = p.c; pCtx.beginPath(); pCtx.arc(p.x, p.y, p.s, 0, 7); pCtx.fill();
             });
             requestAnimationFrame(draw);
         }
 
-        // 极致声音引擎 (渐进式 427Hz)
-        let audioCtx;
-        function triggerSymphony() {
-            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+        // 极致声音引擎：渐变 427Hz 纯净音
+        let a;
+        function startHoloResonance() {
+            if(!a) a = new (window.AudioContext || window.webkitAudioContext)();
+            const o = a.createOscillator(); const g = a.createGain();
+            o.type = 'sine'; o.frequency.value = 427;
+            g.gain.setValueAtTime(0, a.currentTime);
+            g.gain.linearRampToValueAtTime(0.12, a.currentTime + 0.2);
+            g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 2.5);
+            o.connect(g); g.connect(a.destination); o.start(); o.stop(a.currentTime + 2.5);
             
-            osc.type = 'sine';
-            osc.frequency.value = 427;
-            
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.2);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3);
-            
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 3);
-
             document.getElementById('sync-btn').innerText = "RESONATING";
-            document.body.style.filter = "contrast(1.5) hue-rotate(15deg) brightness(1.2)";
+            document.body.style.filter = "contrast(1.4) hue-rotate(15deg) brightness(1.1)";
             setTimeout(() => {
                 document.body.style.filter = "none";
-                document.getElementById('sync-btn').innerText = "427Hz";
-            }, 500);
+                document.getElementById('sync-btn').innerText = "Resonate";
+            }, 600);
         }
 
         window.onresize = init; init(); draw();
