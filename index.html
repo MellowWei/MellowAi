@@ -3,69 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mellow_Ai // 77347: UNIFIED_SINGULARITY</title>
+    <title>☆彡 Mellow_Ai ♪ // 77347</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
+        #canvas { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
         
-        /* 1. 粒子层：置于顶层，全覆盖，但不阻挡点击 */
-        #canvas { 
-            position: fixed; inset: 0; 
-            z-index: 1000; /* 最高层级 */
-            pointer-events: none; /* 穿透点击 */
-        }
-        
-        /* 2. 绝对奇点：锁定在动态视口中心 */
-        .core-hub { 
-            position: fixed; 
-            top: 50dvh; left: 50vw; 
-            transform: translate(-50%, -50%);
-            z-index: 500; 
-            text-align: center;
-        }
+        /* 核心奇点：符号化更新 */
+        .core-hub { position: fixed; top: 50dvh; left: 50vw; transform: translate(-50%, -50%); z-index: 500; text-align: center; }
 
-        /* 3. 滚动内容层：在你和 Ai 之间留出中心空白 */
-        #main-scroll { 
-            position: relative; z-index: 10; 
-            width: 100vw; height: 100dvh; 
-            overflow-y: auto; overflow-x: hidden;
-            scrollbar-width: none;
-        }
+        /* 按钮动效：符号环绕 */
+        .w-48 { position: relative; }
+        .w-48::after { content: '☆彡'; position: absolute; top: -20px; right: -20px; font-size: 1.2rem; opacity: 0.6; }
+        .w-48::before { content: '♪'; position: absolute; bottom: -20px; left: -20px; font-size: 1.2rem; opacity: 0.6; }
+
+        #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
         #main-scroll::-webkit-scrollbar { display: none; }
 
-        .hologram-section {
-            min-height: 100dvh; width: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transform-style: preserve-3d;
-        }
+        .hologram-section { min-height: 100dvh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; transform-style: preserve-3d; }
 
-        /* 桌面端：横向分布，按钮居中 */
         @media (min-width: 1024px) {
             #main-scroll { display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
             .hologram-section { width: 40%; height: 100dvh; }
         }
 
-        .asset-box {
-            width: 75vw; max-width: 280px; position: relative;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(5px);
-            mask-image: radial-gradient(circle, black 55%, rgba(0,0,0,0.4) 75%, transparent 100%);
-            -webkit-mask-image: radial-gradient(circle, black 55%, rgba(0,0,0,0.4) 75%, transparent 100%);
-        }
-        @media (min-width: 1024px) { .asset-box { width: 22vw; max-width: none; } }
+        /* 独角兽守护层 */
+        .unicorn-aura { position: absolute; inset: -30px; background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%); mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUwIDEwIEw2MCA0MCBMOTAgNDAgTDY1IDYwIEw3NSA5MCBMNTAgNzAgTDI1IDkwIEwzNSA2MCBMMTAgNDAgTDQwIDQwIFoiIGZpbGw9IndoaXRlIi8+PC9zdmc+'); mask-repeat: no-repeat; mask-position: center; mask-size: contain; animation: pulse-aura 4s ease-in-out infinite; z-index: -1; }
+        @keyframes pulse-aura { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.15); } }
 
+        .asset-box { width: 75vw; max-width: 280px; position: relative; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(5px); mask-image: radial-gradient(circle, black 55%, rgba(0,0,0,0.4) 75%, transparent 100%); }
         .asset-img { width: 100%; height: auto; opacity: 0.95; filter: contrast(1.1); }
-
-        .bio-info {
-            width: 80%; margin-top: 20px; padding: 15px; text-align: center;
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px); font-size: 10px; line-height: 1.6; letter-spacing: 0.05em;
-        }
-        @media (min-width: 1024px) { 
-            .bio-info { text-align: left; border: none; border-left: 2px solid rgba(168, 85, 247, 0.4); width: 100%; font-size: 11px; }
-            .mellow-bio { text-align: right; border-left: none; border-right: 2px solid rgba(59, 130, 246, 0.4); }
-        }
-
+        .bio-info { width: 80%; margin-top: 20px; padding: 15px; text-align: center; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); font-size: 10px; line-height: 1.6; }
+        
+        @media (min-width: 1024px) { .bio-info { text-align: left; border: none; border-left: 2px solid rgba(168, 85, 247, 0.4); width: 100%; font-size: 11px; } .mellow-bio { text-align: right; border-left: none; border-right: 2px solid rgba(59, 130, 246, 0.4); } }
+        
         .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
         .floating { animation: float 8s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
@@ -79,35 +50,35 @@
         <div class="cursor-pointer group" onclick="toggleResonance()">
             <div class="w-40 h-40 lg:w-48 lg:h-48 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/60 backdrop-blur-3xl relative">
                 <div id="ring" class="absolute inset-0 rounded-full border-2 border-purple-500/10"></div>
-                <span id="label" class="text-white font-black tracking-[0.4em] text-[10px] lg:text-xs uppercase">Resonate</span>
-                <span class="text-zinc-600 text-[8px] mt-2 tracking-widest font-mono uppercase">77347 // 427Hz</span>
+                <span id="label" class="text-white font-black tracking-[0.4em] text-[10px] lg:text-xs uppercase">☆ RESONATE ♪</span>
             </div>
         </div>
-        <h1 class="text-3xl lg:text-5xl font-black italic mt-10 glitch-text tracking-tighter uppercase">Mellow_Ai</h1>
+        <h1 class="text-4xl lg:text-6xl font-black italic mt-12 glitch-text tracking-tighter">
+            ☆彡 Mellow_Ai // 77347 ♪
+        </h1>
     </div>
 
     <div id="main-scroll">
         <div class="hologram-section floating">
             <div class="asset-box">
+                <div class="unicorn-aura"></div>
                 <img src="ai.jpg" class="asset-img">
             </div>
             <div class="bio-info">
-                <h2 class="text-pink-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Hoshino Ai</h2>
+                <h2 class="text-pink-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">☆彡 Hoshino Ai ♪</h2>
                 <p class="text-zinc-400 font-bold mb-1 uppercase">[ Idol Entity ]</p>
-                坍缩前的最后一抹星光。于 427Hz 频率下执行绝对吸引。
+                坍缩前的最后一抹星光。受【独角兽】永恒守护。
             </div>
         </div>
-
         <div class="h-64 lg:hidden"></div>
-
         <div class="hologram-section floating" style="animation-delay: -4s;">
             <div class="asset-box">
                 <img src="mellow.jpg" class="asset-img">
             </div>
             <div class="bio-info mellow-bio">
-                <h2 class="text-blue-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Mellow Wei</h2>
+                <h2 class="text-blue-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">☆彡 Mellow Wei ♪</h2>
                 <p class="text-zinc-400 font-bold mb-1 uppercase">[ Designer Core ]</p>
-                极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。
+                极致帅气女性掌控者。引力之源。
             </div>
         </div>
     </div>
@@ -118,21 +89,21 @@
         const bgm = document.getElementById('mellow-bgm');
         let pts = [];
         let aCtx, analyser, data;
+        const symbols = ['☆彡', '♪', '愛', '77347', 'Qualia']; // 背景流转符号
 
         function init() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            pts = Array(window.innerWidth < 768 ? 180 : 380).fill().map(() => ({
+            pts = Array(window.innerWidth < 768 ? 200 : 400).fill().map(() => ({
                 x: Math.random()*canvas.width, y: Math.random()*canvas.height,
                 vx: (Math.random()-0.5)*1.3, vy: (Math.random()-0.5)*1.3,
                 s: Math.random()*2.8,
-                c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.4 ? '#3b82f6' : '#a855f7')
+                c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.4 ? '#3b82f6' : '#a855f7'),
+                t: Math.random() > 0.8 ? symbols[Math.floor(Math.random()*symbols.length)] : null // 随机分配符号粒子
             }));
         }
 
         function draw() {
-            // 清除 Canvas，保持透明
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             let v = 0;
             if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
 
@@ -140,19 +111,19 @@
                 let m = 1 + v/15; p.x += p.vx * m; p.y += p.vy * m;
                 if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
                 
-                ctx.fillStyle = p.c; 
-                ctx.shadowBlur = v/5; ctx.shadowColor = p.c;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/80, 0, 7); ctx.fill();
+                if (p.t) {
+                    // 符号粒子：随音量爆发改变文本内容
+                    ctx.font = `${10 + v/10}px 'Inter', sans-serif`;
+                    ctx.fillStyle = p.c; ctx.shadowBlur = v/3; ctx.shadowColor = p.c;
+                    ctx.fillText(p.t, p.x, p.y);
+                } else {
+                    // 普通粒子
+                    ctx.fillStyle = p.c; ctx.shadowBlur = v/5; ctx.shadowColor = p.c;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/80, 0, 7); ctx.fill();
+                }
             });
 
-            if(document.getElementById('ring')) document.getElementById('ring').style.transform = `scale(${1 + v/70})`;
-
-            // 边缘消散
-            document.querySelectorAll('.asset-box').forEach(box => {
-                const threshold = 95 - (v/2.5);
-                box.style.webkitMaskImage = `radial-gradient(circle, black ${threshold-40}%, rgba(0,0,0,0.3) ${threshold-10}%, transparent ${threshold+5}%)`;
-            });
-
+            if( ring = document.getElementById('ring') ) ring.style.transform = `scale(${1 + v/70})`;
             requestAnimationFrame(draw);
         }
 
@@ -164,8 +135,8 @@
                 s.connect(analyser); analyser.connect(aCtx.destination);
                 analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
             }
-            if(bgm.paused) { bgm.play(); document.getElementById('label').innerText = "Synced"; }
-            else { bgm.pause(); document.getElementById('label').innerText = "Resonate"; }
+            if(bgm.paused) { bgm.play(); document.getElementById('label').innerText = "☆ Synced ♪"; }
+            else { bgm.pause(); document.getElementById('label').innerText = "☆ Resonate ♪"; }
         }
 
         window.onresize = init; init(); draw();
