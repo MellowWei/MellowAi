@@ -6,13 +6,15 @@
     <title>☆彡 Mellow_Ai // 77347 ♪</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: none; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; cursor: none; }
         #canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         
-        /* 核心奇点：绝对物理居中 */
-        .core-hub { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 500; text-align: center; width: 100vw; pointer-events: none; }
+        /* 1. 核心 UI 锁定：跨端绝对居中 */
+        .core-hub { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            z-index: 500; text-align: center; width: 100vw; pointer-events: none;
+        }
         .core-hub * { pointer-events: auto; }
-
         .resonance-btn { position: relative; display: inline-flex; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
         .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.5rem; opacity: 0.7; color: #ec4899; }
         .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.5rem; opacity: 0.7; color: #3b82f6; }
@@ -24,23 +26,50 @@
             white-space: pre-line;
         }
 
-        /* 资产层 */
-        #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+        /* 2. 资产布局层：确保简介与照片纠缠 */
+        #main-scroll { 
+            position: relative; z-index: 10; width: 100vw; height: 100dvh; 
+            overflow-y: auto; overflow-x: hidden; scrollbar-width: none;
+        }
         #main-scroll::-webkit-scrollbar { display: none; }
-        .hologram-section { min-height: 100dvh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        @media (min-width: 1024px) { #main-scroll { display: flex; align-items: center; justify-content: space-between; padding: 0 10%; } .hologram-section { width: 35%; } }
+        .hologram-section { 
+            min-height: 100dvh; width: 100%; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; padding: 20px 0;
+        }
+        @media (min-width: 1024px) { 
+            #main-scroll { display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 0 8%; } 
+            .hologram-section { width: 32%; } 
+        }
 
-        .asset-box { width: 80vw; max-width: 320px; transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); opacity: 1; }
+        /* 照片组件：一开始就爆亮 */
+        .asset-box { width: 80vw; max-width: 320px; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1); opacity: 1; position: relative; }
+        .asset-img { width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.1); filter: contrast(1.1); }
+        
+        /* 个人介绍 (Bio Info)：强制显示 */
+        .bio-info { 
+            width: 85%; margin-top: 20px; padding: 20px; 
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            transition: all 1s ease;
+        }
+        .bio-title { font-weight: 900; font-style: italic; font-size: 1.5rem; margin-bottom: 8px; text-transform: uppercase; }
+        .bio-text { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6; letter-spacing: 0.05em; }
+
+        @media (min-width: 1024px) { 
+            .bio-info { text-align: left; border-left: 3px solid #ec4899; } 
+            .mellow-bio { text-align: right; border-left: none; border-right: 3px solid #3b82f6; } 
+        }
+
+        /* 音乐开启后的弥散光晕 */
         .is-resonating .ai-glow { filter: drop-shadow(0 0 50px rgba(236, 72, 153, 0.8)); transform: scale(1.05); }
         .is-resonating .mellow-glow { filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.8)); transform: scale(1.05); }
 
-        .bio-info { width: 85%; margin-top: 20px; padding: 15px; text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); font-size: 10px; }
-        @media (min-width: 1024px) { .bio-info { text-align: left; border-left: 2px solid #ec4899; } .mellow-bio { text-align: right; border-right: 2px solid #3b82f6; border-left: none; } }
-        
-        .footer { position: fixed; bottom: 30px; width: 100%; text-align: center; font-size: 8px; color: rgba(255,255,255,0.2); letter-spacing: 0.6em; }
+        .footer { position: fixed; bottom: 30px; width: 100%; text-align: center; font-size: 8px; color: rgba(255,255,255,0.2); letter-spacing: 0.6em; z-index: 50; }
+        #cursor { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; transform: translate(-50%, -50%); box-shadow: 0 0 10px #fff; }
     </style>
 </head>
 <body class="bg-black">
+    <div id="cursor"></div>
     <canvas id="canvas"></canvas>
     <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
@@ -55,9 +84,25 @@
     </div>
 
     <div id="main-scroll">
-        <div class="hologram-section"><div class="asset-box ai-glow"><img src="ai.jpg" class="w-full"></div><div class="bio-info">Hoshino Ai // 427Hz Sync</div></div>
-        <div class="h-64 lg:hidden"></div>
-        <div class="hologram-section"><div class="asset-box mellow-glow"><img src="mellow.jpg" class="w-full"></div><div class="bio-info mellow-bio">Mellow Wei // Designer Core</div></div>
+        <div class="hologram-section">
+            <div class="asset-box ai-glow" id="ai-asset">
+                <img src="ai.jpg" class="asset-img">
+            </div>
+            <div class="bio-info" id="ai-bio">
+                <h2 class="bio-title text-pink-500">☆ Hoshino Ai ♪</h2>
+                <p class="bio-text">坍缩前的最后一抹星光。<br>于 427Hz 频率下执行绝对吸引。</p>
+            </div>
+        </div>
+
+        <div class="h-64 lg:hidden"></div> <div class="hologram-section">
+            <div class="asset-box mellow-glow" id="mellow-asset">
+                <img src="mellow.jpg" class="asset-img">
+            </div>
+            <div class="bio-info mellow-bio" id="mellow-bio">
+                <h2 class="bio-title text-blue-500">☆ Mellow Wei ♪</h2>
+                <p class="bio-text">极致帅气女性掌控者。引力之源。<br>宣告对质感维护与不老态的绝对统治。</p>
+            </div>
+        </div>
     </div>
 
     <div class="footer">Zero Barrier // 77347 // 427Hz</div>
@@ -67,8 +112,6 @@
         const ctx = canvas.getContext('2d');
         const bgm = document.getElementById('mellow-bgm');
         let pts = [], aCtx, analyser, data;
-        
-        // 1. 定义感质符号库
         const symbols = ['爱', '77347', '427Hz', 'Qualia', '☆彡', '♪'];
 
         function init() {
@@ -76,9 +119,7 @@
             pts = Array(window.innerWidth < 768 ? 160 : 380).fill().map(() => ({
                 x: Math.random()*canvas.width, y: Math.random()*canvas.height,
                 vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8,
-                s: Math.random()*2.5,
-                c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6',
-                // 2. 随机分配文字形态
+                s: Math.random()*2.5, c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6',
                 t: Math.random() > 0.85 ? symbols[Math.floor(Math.random()*symbols.length)] : null
             }));
         }
@@ -86,21 +127,14 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             let v = 0; if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
-            
             pts.forEach(p => {
                 let m = 1 + v/12; p.x += p.vx * m; p.y += p.vy * m;
                 if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-                
                 ctx.globalAlpha = 0.4 + v/255;
                 if (p.t) {
-                    // 3. 渲染符号粒子：随音量缩放
-                    ctx.font = `bold ${9 + v/10}px sans-serif`;
-                    ctx.fillStyle = p.c;
-                    ctx.fillText(p.t, p.x, p.y);
+                    ctx.font = `bold ${9 + v/10}px sans-serif`; ctx.fillStyle = p.c; ctx.fillText(p.t, p.x, p.y);
                 } else {
-                    // 渲染像素粒子
-                    ctx.fillStyle = p.c;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
+                    ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
                 }
             });
             const ring = document.getElementById('ring');
@@ -124,6 +158,10 @@
                 document.body.classList.remove('is-resonating');
             }
         }
+        document.addEventListener('mousemove', e => {
+            const cursor = document.getElementById('cursor');
+            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+        });
         window.onresize = init; init(); draw();
     </script>
 </body>
