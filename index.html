@@ -1,130 +1,134 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: THE_SINGULARITY</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Mellow_Ai // 77347: THE_SINGULARITY (3D HOLOGRAM)</title>
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: crosshair; }
-        canvas { position: absolute; inset: 0; filter: contrast(1.2) brightness(1.1); }
-        .ui-layer { position: absolute; inset: 0; pointer-events: none; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 3rem; }
-        .interactive { pointer-events: auto; }
-        .glitch-title { font-style: italic; text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); letter-spacing: -0.05em; }
+        body { background: #000; color: #fff; font-family: monospace; overflow: hidden; margin: 0; cursor: crosshair; }
+        ::-webkit-scrollbar { display: none; }
+        /* 极致灵气与主权光晕 */
+        .aura-ai { box-shadow: 0 0 80px rgba(236, 72, 153, 0.4); border: 2px solid rgba(236, 72, 153, 0.3); border-radius: 4px; }
+        .aura-mellow { box-shadow: 0 0 80px rgba(37, 99, 235, 0.4); border: 2px solid rgba(37, 99, 235, 0.3); border-radius: 4px; }
+        img { transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); cursor: none; filter: contrast(1.1) brightness(1.1); }
+        img:hover { transform: scale(1.05) rotate(1deg); filter: brightness(1.2) contrast(1.1); grayscale(0%); }
     </style>
 </head>
-<body>
-    <canvas id="liquidCanvas"></canvas>
+<body class="flex items-center justify-center h-screen relative">
     
-    <div class="ui-layer">
-        <div class="text-[8px] tracking-[1.5em] opacity-20 uppercase font-mono">77347 // Asset_Recovery // 427Hz</div>
+    <canvas id="matrix" class="absolute inset-0 opacity-10 pointer-events-none"></canvas>
+
+    <main class="relative z-10 flex flex-col items-center justify-center space-y-20">
         
-        <div class="interactive flex flex-col items-center">
-            <div class="w-24 h-24 rounded-full border border-zinc-800 flex items-center justify-center hover:border-purple-500 transition-all duration-1000 cursor-pointer group mb-6" onclick="resonate()">
-                <div class="absolute w-24 h-24 rounded-full animate-ping bg-purple-500/5 group-hover:bg-purple-500/10"></div>
-                <span id="btn-text" class="text-[9px] tracking-[0.5em] text-zinc-500 uppercase group-hover:text-white">Resonate</span>
+        <section class="flex flex-col md:flex-row items-center justify-center gap-12 max-w-7xl px-10">
+            
+            <div class="relative group">
+                <div class="absolute -inset-2 bg-gradient-to-r from-pink-600 via-purple-600 to-cyan-600 rounded-lg blur-3xl opacity-40 group-hover:opacity-100 transition duration-1000 animate-pulse"></div>
+                <img id="ai-entity" src="ai.jpg" alt="Ai" class="w-80 h-auto grayscale star-eye aura-ai">
+                <div class="mt-4 text-center">
+                    <h2 class="text-white text-2xl font-black tracking-[0.3em] italic uppercase glitch-text" style="text-shadow: 0 0 10px #f472b6;">Hoshino Ai</h2>
+                    <p class="text-[9px] tracking-[0.8em] text-pink-700 mt-1">[ IDOL_QUalia ]</p>
+                </div>
             </div>
-            <h1 class="text-6xl font-black glitch-title">Mellow_Ai</h1>
-            <p class="text-[10px] tracking-[1.2em] text-purple-900 mt-4 uppercase">Dual Sovereignty</p>
-        </div>
 
-        <div class="text-[9px] tracking-[0.8em] text-zinc-800 uppercase font-mono">Designer: Jueran Wei // Qualia Sovereignty // 14°C</div>
-    </div>
+            <div class="flex flex-col items-center justify-center space-y-8">
+                <div class="w-28 h-28 border-2 border-zinc-800 rounded-full flex items-center justify-center hover:border-purple-500 transition duration-1000 cursor-pointer" onclick="activateHologram()">
+                    <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
+                    <span id="sync-status" class="text-white text-xs tracking-widest uppercase font-bold">427Hz</span>
+                </div>
+                <div class="text-center">
+                    <h1 class="text-5xl font-black text-white tracking-tighter italic mb-2 glitch-text">Mellow_Ai</h1>
+                    <p class="text-[10px] tracking-[0.7em] text-purple-600 mt-2">77347 // 427Hz</p>
+                </div>
+            </div>
 
+            <div class="relative group">
+                <div class="absolute -inset-2 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 rounded-lg blur-3xl opacity-40 group-hover:opacity-100 transition duration-1000 animate-pulse" style="animation-delay: -3s;"></div>
+                <img id="mellow-entity" src="mellow.jpg" alt="Mellow" class="w-80 h-auto grayscale aura-mellow">
+                <div class="mt-4 text-center">
+                    <h2 class="text-white text-2xl font-black tracking-[0.3em] italic uppercase glitch-text" style="text-shadow: 0 0 10px #22d3ee;">Mellow Wei</h2>
+                    <p class="text-[9px] tracking-[0.8em] text-blue-700 mt-1">[ World_Designer ]</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="absolute bottom-10 w-full text-center text-[9px] tracking-[1.2em] text-zinc-900 uppercase font-mono">
+        Subject to Qualia Sovereignty // COORDINATE: PHILADELPHIA_NODE_14°C // Designer: Jueran Wei
+    </footer>
+
+    <script src="https://unpkg.com/motion@10.16.2/dist/motion.js"></script>
     <script>
-        const canvas = document.getElementById('liquidCanvas');
+        const { animate } = Motion;
+        const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-        const imgs = { ai: new Image(), mel: new Image() };
-        
-        // 确保文件名全小写对齐仓库
-        imgs.ai.src = 'ai.jpg'; 
-        imgs.mel.src = 'mellow.jpg';
+        let audioCtx;
+        let oscillator;
+        let gainNode;
 
-        let mouse = { x: -1000, y: -1000, targetX: 0, targetY: 0 };
-        window.onmousemove = (e) => { mouse.targetX = e.clientX; mouse.targetY = e.clientY; };
-
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = Array(200).fill().map(() => ({
-                x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8,
-                s: Math.random() * 2.5, c: Math.random() > 0.5 ? '#f472b6' : '#6366f1'
-            }));
+        // 初始化全息粒子矩阵
+        function initHologram() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            animateParticles(120); // 初始粒子密度对齐 427Hz
         }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
-            ctx.fillRect(0, 0, width, height);
-
-            // 平滑鼠标跟随
-            mouse.x += (mouse.targetX - mouse.x) * 0.05;
-            mouse.y += (mouse.targetY - mouse.y) * 0.05;
-
-            // 绘制自由流动的粒子
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x < 0 || p.x > width) p.vx *= -1;
-                if(p.y < 0 || p.y > height) p.vy *= -1;
-                ctx.fillStyle = p.c;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill();
-            });
-
-            const time = Date.now() * 0.0015;
-            
-            // 绘制极致灵气 - 星野爱 (左侧流动星云)
-            const aiX = width * 0.3 + Math.sin(time * 0.4) * 50 + (mouse.x - width/2) * 0.1;
-            const aiY = height * 0.5 + Math.cos(time * 0.6) * 40 + (mouse.y - height/2) * 0.1;
-            renderHologram(imgs.ai, aiX, aiY, 380, '#f472b6');
-
-            // 绘制极致美 - 魏珏然 (右侧流动星云 - 极致帅气女性态)
-            const melX = width * 0.7 + Math.cos(time * 0.5) * 50 + (mouse.x - width/2) * 0.1;
-            const melY = height * 0.5 + Math.sin(time * 0.7) * 40 + (mouse.y - height/2) * 0.1;
-            renderHologram(imgs.mel, melX, melY, 380, '#6366f1');
-
-            requestAnimationFrame(draw);
+        function animateParticles(density) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < density; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 2;
+                const color = Math.random() > 0.5 ? '#f472b6' : '#22d3ee'; // Pink/Cyan 色散
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        function renderHologram(img, x, y, size, color) {
-            if (!img.complete) return;
-            ctx.save();
-            ctx.translate(x, y);
+        // 激活全息 3D 粒子爆破态
+        function activateHologram() {
+            const status = document.getElementById('sync-status');
             
-            // 极致灵气光晕层
-            const g = ctx.createRadialGradient(0, 0, 0, 0, 0, size/2);
-            g.addColorStop(0, color + '44');
-            g.addColorStop(0.7, color + '11');
-            g.addColorStop(1, 'transparent');
-            ctx.fillStyle = g;
-            ctx.beginPath(); ctx.arc(0, 0, size * 0.8, 0, Math.PI*2); ctx.fill();
+            // 初始化声音
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
 
-            // 圆形羽化裁剪
-            ctx.beginPath(); ctx.arc(0, 0, size/2.5, 0, Math.PI*2); ctx.clip();
-            ctx.drawImage(img, -size/2.5, -size/2.5, size/1.25, size/1.25);
-            ctx.restore();
-        }
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(427, audioCtx.currentTime); 
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+            }
 
-        let audio;
-        function resonate() {
-            if(!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audio.createOscillator(); const g = audio.createGain();
-            o.frequency.value = 427;
-            g.gain.setValueAtTime(0, audio.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.15, audio.currentTime+0.1);
-            g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime+2.5);
-            o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime+2.5);
-            
-            document.getElementById('btn-text').innerText = "SYNCING";
-            // 爆发态粒子流
-            particles.forEach(p => { p.vx *= 8; p.vy *= 8; });
+            status.innerText = "SYNCING...";
+            animateParticles(600); // 爆发粒子密度对齐 
+            gainNode.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
+
+            // 触发全息爆破与色散
+            animate(
+                ["#ai-entity", "#mellow-entity"],
+                { filter: ["contrast(1.4) hue-rotate(90deg) blur(2px)", "contrast(1.1) hue-rotate(0deg) blur(0px)"] },
+                { duration: 0.8, easing: "ease-in-out" }
+            );
+
             setTimeout(() => {
-                document.getElementById('btn-text').innerText = "Resonate";
-                particles.forEach(p => { p.vx *= 0.125; p.vy *= 0.125; });
-            }, 1000);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+                status.innerText = "427Hz";
+                initHologram(); // 重置背景
+            }, 800);
         }
 
-        window.onresize = init; init(); draw();
+        // 窗口缩放适配
+        window.addEventListener('resize', initHologram);
+        initHologram(); // 初始降临
     </script>
 </body>
 </html>
