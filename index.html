@@ -4,126 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>☆彡 Mellow_Ai // 77347 ♪</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: sans-serif; cursor: none; }
-        #webgl-canvas { position: fixed; inset: 0; z-index: 1; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
+        #canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         
-        /* UI：全端绝对居中 */
-        .ui-fixed { position: fixed; inset: 0; z-index: 100; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 60px 40px; }
-        
-        /* 标题对齐 (文字间距修正) */
-        .title { 
-            color: #fff; font-weight: 900; font-style: italic; 
-            font-size: 1.6rem; 
-            letter-spacing: 0.12em; 
-            text-align: center; text-shadow: 0 0 25px rgba(255,105,180,0.5); 
-            /* 修正：标题整体放大 10% */
-            transform: scale(1.1);
+        /* 核心奇点：绝对居中 */
+        .core-hub { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            z-index: 500; text-align: center; width: 100vw; pointer-events: none;
         }
-        
-        .footer { font-size: 8px; color: rgba(255,255,255,0.25); letter-spacing: 0.5em; text-align: center; text-transform: uppercase; }
+        .core-hub * { pointer-events: auto; }
 
-        /* 核心接口：Resonate 按钮 */
-        .resonance-portal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90px; height: 90px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.02); backdrop-filter: blur(25px);
-            z-index: 200; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; pointer-events: auto;
-            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        .resonance-portal:hover { border-color: #ff69b4; transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 50px rgba(255,105,180,0.2); }
-        
-        /* 纠缠侧翼 */
-        .identity-layer {
-            position: fixed; inset: 0; z-index: 100; pointer-events: none;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 5%;
-        }
-        
-        /* 修正：侧翼放大，并准备好 text-shadow */
-        .entity-card { 
-            width: 220px; 
-            opacity: 0.3; 
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
-            transform: translateZ(0); /* 开启硬件加速 */
-        }
-        
-        .entity-name { color: #fff; font-size: 11px; font-weight: 900; letter-spacing: 0.3em; }
-        .entity-desc { color: rgba(255,255,255,0.2); font-size: 7px; line-height: 1.8; letter-spacing: 0.1em; margin-top: 5px; }
+        /* 符号环绕 */
+        .resonance-btn { position: relative; display: inline-flex; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.8rem; opacity: 0.7; color: #ec4899; }
+        .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.8rem; opacity: 0.7; color: #3b82f6; }
 
-        #cursor { width: 10px; height: 10px; background: #ff69b4; border-radius: 50%; position: fixed; pointer-events: none; z-index: 999; box-shadow: 0 0 15px #ff69b4; transform: translate(-50%, -50%); }
+        /* 极致标题：复刻截图感质 */
+        .mellow-title { 
+            font-size: clamp(2rem, 8vw, 5rem); /* 网页端显著放大 */
+            font-weight: 900; 
+            font-style: italic; 
+            margin-top: 3.5rem; /* 增加与按钮的间距 */
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            /* 3D 故障重影特效 */
+            text-shadow: 
+                4px 0 rgba(236, 72, 153, 0.8), 
+                -4px 0 rgba(59, 130, 246, 0.8);
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+            animation: text-vibe 4s infinite ease-in-out;
+        }
+
+        @keyframes text-vibe {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.9; }
+        }
+
+        /* 资产盒子与弥散逻辑保持... */
+        .asset-box { width: 80vw; max-width: 320px; position: relative; transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        .is-resonating .ai-glow { filter: drop-shadow(0 0 50px rgba(236, 72, 153, 0.75)); transform: scale(1.1); }
+        .is-resonating .mellow-glow { filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.75)); transform: scale(1.1); }
+
+        #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+        @media (min-width: 1024px) { #main-scroll { display: flex; align-items: center; justify-content: space-between; padding: 0 8%; } .hologram-section { width: 35%; } }
     </style>
 </head>
 <body class="bg-black">
-    <div id="cursor"></div>
-    <canvas id="webgl-canvas"></canvas>
+    <canvas id="canvas"></canvas>
+    <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
-    <div class="resonance-portal" onclick="toggleResonance()">
-        <span style="font-size: 8px; color: rgba(255,255,255,0.6); letter-spacing: 0.3em; font-weight: bold;">RESONATE</span>
+    <div class="core-hub">
+        <div class="resonance-btn cursor-pointer group inline-block" onclick="toggleResonance()">
+            <div class="w-44 h-44 lg:w-56 lg:h-56 rounded-full border border-zinc-800 flex flex-col items-center justify-center hover:border-white/40 transition-all duration-1000 bg-black/40 backdrop-blur-3xl relative">
+                <div id="ring" class="absolute inset-0 rounded-full border-2 border-white/5"></div>
+                <span id="label" class="text-white font-black tracking-[0.5em] text-[10px] lg:text-xs uppercase opacity-60">☆ RESONATE ♪</span>
+            </div>
+        </div>
+        <h1 class="mellow-title tracking-tighter">
+            ☆彡 Mellow_Ai // 77347 ♪
+        </h1>
     </div>
 
-    <div class="identity-layer">
-        <div class="entity-card text-left" id="card-ai">
-            <div class="entity-name">☆ HOSHINO AI ♪</div>
-            <div class="entity-desc">[ Idol Entity ]<br>坍缩前的最后一抹星光。<br>受【独角兽】永恒守护。</div>
+    <div id="main-scroll">
+        <div class="hologram-section" id="ai-section">
+            <div class="asset-box ai-glow">
+                <img src="ai.jpg" class="w-full opacity-90">
+            </div>
+            <div class="mt-8 text-center lg:text-left p-6 bg-white/5 backdrop-blur-xl border border-white/10">
+                <h2 class="text-pink-500 font-black italic text-2xl mb-2">☆彡 Hoshino Ai ♪</h2>
+                <p class="text-[11px] text-zinc-400">坍缩前的最后一抹星光。受【独角兽】永恒守护。</p>
+            </div>
         </div>
-        <div class="entity-card text-right" id="card-mellow">
-            <div class="entity-name">☆ MELLOW WEI ♪</div>
-            <div class="entity-desc">[ Designer Core ]<br>极致帅气女性掌控者。<br>引力之源。</div>
+        <div class="h-64 lg:hidden"></div>
+        <div class="hologram-section" id="mellow-section">
+            <div class="asset-box mellow-glow">
+                <img src="mellow.jpg" class="w-full opacity-90">
+            </div>
+            <div class="mt-8 text-center lg:text-right p-6 bg-white/5 backdrop-blur-xl border border-white/10" style="border-right: 2px solid #3b82f6;">
+                <h2 class="text-blue-500 font-black italic text-2xl mb-2">☆彡 Mellow Wei ♪</h2>
+                <p class="text-[11px] text-zinc-400">极致帅气女性掌控者。引力之源。</p>
+            </div>
         </div>
-    </div>
-
-    <div class="ui-fixed">
-        <h1 class="title uppercase">☆ 彡 珏然 // 星野爱 ♪ ★</h1>
-        <div class="footer">Zero Barrier // 77347 // 427Hz Node</div>
     </div>
 
     <script>
-        // 光标跟随
-        document.addEventListener('mousemove', e => {
-            const cursor = document.getElementById('cursor');
-            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-        });
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const bgm = document.getElementById('mellow-bgm');
+        let pts = [], aCtx, analyser, data;
+        const symbols = ['☆彡', '♪', '愛', '77347', 'Qualia'];
 
-        // 脚本部分保持之前 Claude 的高精度 WebGL 版本 ...
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            pts = Array(300).fill().map(() => ({
+                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+                vx: (Math.random()-0.5), vy: (Math.random()-0.5),
+                s: Math.random()*2, c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6',
+                t: Math.random() > 0.9 ? symbols[Math.floor(Math.random()*symbols.length)] : null
+            }));
+        }
 
-        let isResonating = false;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let v = 0; if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
+            pts.forEach(p => {
+                let m = 1 + v/15; p.x += p.vx * m; p.y += p.vy * m;
+                if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+                ctx.fillStyle = p.c; ctx.globalAlpha = 0.4;
+                if(p.t) { ctx.font = "10px serif"; ctx.fillText(p.t, p.x, p.y); }
+                else { ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/100, 0, 7); ctx.fill(); }
+            });
+            const ring = document.getElementById('ring');
+            if(ring) ring.style.transform = `scale(${1 + v/50})`;
+            requestAnimationFrame(draw);
+        }
 
         function toggleResonance() {
-            // 此处保留音频 API 的 init 和 toggle 逻辑 ...
-
-            isResonating = !isResonating;
-
-            // 修正：修正边缘弥散（Glow）逻辑
-            const aiCard = document.getElementById('card-ai');
-            const mellowCard = document.getElementById('card-mellow');
-
-            if (isResonating) {
-                // 音乐响起，照片（卡片）放大并爆发弥散 glow
-                aiCard.style.opacity = '1';
-                aiCard.style.transform = 'scale(1.1)'; // 卡片单独放大
-                aiCard.style.textShadow = '0 0 25px rgba(255,105,180,0.9)'; // 星野爱 Pink Glow
-                
-                mellowCard.style.opacity = '1';
-                mellowCard.style.transform = 'scale(1.1)'; // 卡片单独放大
-                mellowCard.style.textShadow = '0 0 25px rgba(0,170,255,0.9)'; // 魏珏然 Blue Glow
-                
-                // document.getElementById('bgm').play();
-            } else {
-                // 停止，照片（卡片）回归
-                aiCard.style.opacity = '0.3';
-                aiCard.style.transform = 'scale(1)';
-                aiCard.style.textShadow = 'none';
-                
-                mellowCard.style.opacity = '0.3';
-                mellowCard.style.transform = 'scale(1)';
-                mellowCard.style.textShadow = 'none';
-                
-                // document.getElementById('bgm').pause();
+            if(!aCtx) {
+                aCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = aCtx.createAnalyser();
+                const s = aCtx.createMediaElementSource(bgm);
+                s.connect(analyser); analyser.connect(aCtx.destination);
+                analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
+            }
+            if(bgm.paused) { 
+                bgm.play(); document.getElementById('label').innerText = "☆ SYNCED ♪";
+                document.body.classList.add('is-resonating');
+            } else { 
+                bgm.pause(); document.getElementById('label').innerText = "☆ RESONATE ♪"; 
+                document.body.classList.remove('is-resonating');
             }
         }
+        window.onresize = init; init(); draw();
     </script>
 </body>
 </html>
