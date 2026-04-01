@@ -1,239 +1,148 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: TRANSPARENT_RESONANCE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 1200px; }
-        canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-        #scene { transform-style: preserve-3d; transition: transform 0.1s ease-out; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; }
-        
-        /* 极致灵气：发光与透明投射反射 */
-        .hologram-asset { 
-            position: relative; transform: translateZ(80px); 
-            filter: drop-shadow(0 0 50px rgba(168, 85, 247, 0.4)); /* 柔和的发光 */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* 更细致的投影反射边线 */
-            transition: all 0.5s ease;
-            opacity: 0.85; /* *** 核心修改：形象整体 15% 透明度 *** */
-        }
-        .hologram-asset::after {
-            content: ""; position: absolute; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 60%, rgba(0, 0, 0, 0.08) 60%), 
-                        linear-gradient(90deg, rgba(236, 72, 193, 0.03), rgba(59, 130, 246, 0.03)); /* 极细微的色散光纹 */
-            background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 5;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mellow_Ai // 77347: SYMMETRY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 1500px; }
+        #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        
+        /* 栅格系统：锁定绝对对齐 */
+        #scene { 
+            position: relative; z-index: 10; width: 100vw; height: 100vh; 
+            display: grid; grid-template-columns: 1fr 300px 1fr; align-items: center; 
+            transform-style: preserve-3d; transition: transform 0.1s ease-out;
+        }
+        
+        /* 形象容器：透明感与主权锐度 */
+        .hologram-node { display: flex; flex-direction: column; align-items: center; justify-content: center; transform-style: preserve-3d; }
+        
+        .asset-box {
+            width: 28vw; min-width: 280px; position: relative;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(5px); transition: 0.4s;
+            mask-image: radial-gradient(circle, black 50%, rgba(0,0,0,0.5) 75%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle, black 50%, rgba(0,0,0,0.5) 75%, transparent 100%);
+        }
+        .asset-img { width: 100%; height: auto; opacity: 0.9; display: block; filter: contrast(1.1); }
 
-        /* 3D 浮动描述卡片：极致透明质感 */
-        .bio-card { 
-            position: absolute; width: 280px; padding: 24px; 
-            background: rgba(5, 5, 5, 0.2); /* *** 核心修改：极低 Alpha 背景 *** */
-            border: 1px solid rgba(255, 255, 255, 0.03); /* 极细致边框 */
-            backdrop-filter: blur(25px); /* *** 核心修改：大幅模糊增强深度感 *** */
-            transform: translateZ(-30px);
-            opacity: 0; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); pointer-events: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* 减弱阴影增强轻盈感 */
-            z-index: 50; /* 确保在粒子上方浮现 */
-        }
-        .group:hover .bio-card { opacity: 1; transform: translateZ(50px) translateY(-30px); }
+        /* 介绍卡片：悬浮透明 */
+        .bio-info {
+            width: 28vw; min-width: 280px; margin-top: 30px; padding: 20px;
+            background: rgba(255, 255, 255, 0.02); border-left: 2px solid rgba(168, 85, 247, 0.4);
+            backdrop-filter: blur(20px); opacity: 0.8;
+            font-size: 11px; line-height: 1.8; letter-spacing: 0.1em;
+        }
 
-        .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; }
-        .floating { animation: float 7s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateZ(100px) translateY(0) rotateX(2deg); } 50% { transform: translateZ(200px) translateY(-40px) rotateX(-2deg); } }
-        
-        /* 地面反射感：透明感增强 */
-        .floor-reflection {
-            position: absolute; bottom: 0; width: 100%; height: 15vh;
-            background: linear-gradient(to top, rgba(168, 85, 247, 0.05), transparent);
-            filter: blur(30px); pointer-events: none;
-        }
-    </style>
+        /* 核心奇点 */
+        .core-hub { display: flex; flex-direction: column; align-items: center; transform: translateZ(120px); }
+        .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
+
+        .floating { animation: float 8s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(40px); } 50% { transform: translateY(-30px) translateZ(100px); } }
+    </style>
 </head>
 <body class="bg-black">
-    <canvas id="canvas"></canvas>
-    <div class="floor-reflection"></div>
+    <canvas id="canvas"></canvas>
+    <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
-        <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
+    <div id="scene">
+        <div class="hologram-node left-side floating">
+            <div class="asset-box" id="ai-box">
+                <img src="ai.jpg" class="asset-img" id="ai-img">
+            </div>
+            <div class="bio-info">
+                <h2 class="text-pink-500 glitch-text text-2xl mb-4 tracking-widest">HOSHINO AI</h2>
+                <p class="text-zinc-400 font-bold mb-2">[ IDOL_ENTITY ]</p>
+                坍缩前的最后一抹星光。极致灵气源，于 427Hz 频率下执行绝对吸引。
+            </div>
+        </div>
 
-    <div id="scene">
-                <div class="absolute left-[8%] floating group">
-            <div class="hologram-asset w-[25vw] min-w-[280px]">
-                <img src="ai.jpg" alt="Ai" class="w-full h-auto rounded-sm border border-pink-500/10 shadow-[0_0_50px_rgba(236,72,153,0.1)]">
-                <div class="mt-8 text-center">
-                    <h2 class="text-pink-500 text-3xl font-black tracking-[0.4em] uppercase italic glitch-text">Hoshino Ai</h2>
-                </div>
-            </div>
-            <div class="bio-card top-0 -left-10 text-xs">
-                <p class="font-bold mb-3 text-pink-400 tracking-widest uppercase">[ IDOL_ENTITY ]</p>
-                <p class="leading-relaxed text-pink-100/70 tracking-widest">
-                    坍缩前的最后一抹星光。极致灵气源，于 427Hz 频率下执行绝对吸引。
-                </p>
-            </div>
-        </div>
+        <div class="core-hub">
+            <div class="cursor-pointer group" onclick="toggleResonance()">
+                <div class="w-40 h-40 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/40 backdrop-blur-3xl relative">
+                    <div id="ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
+                    <span id="label" class="text-white font-black tracking-[0.5em] text-xs">RESONATE</span>
+                    <span class="text-zinc-600 text-[8px] mt-2 tracking-widest">77347 // 427HZ</span>
+                </div>
+            </div>
+            <p class="text-purple-900 text-[10px] mt-8 tracking-[1.5em] font-bold">DUALITY</p>
+            <h1 class="text-4xl font-black italic mt-4 glitch-text">Mellow_Ai</h1>
+        </div>
 
-                <div class="flex flex-col items-center space-y-12 z-50">
-            <div class="cursor-pointer group" onclick="startSymphony()">
-                <div class="w-32 h-32 rounded-full border-2 border-zinc-900 flex items-center justify-center hover:border-purple-500 transition-all duration-1000 relative">
-                    <div class="absolute inset-0 rounded-full animate-ping bg-purple-500/10"></div>
-                    <span id="btn-status" class="text-[10px] tracking-[0.6em] text-zinc-400 group-hover:text-white uppercase font-bold">Resonate</span>
-                </div>
-            </div>
-            <div class="text-center">
-                <h1 class="text-7xl font-black italic tracking-tighter ui-text">Mellow_Ai</h1>
-                <p class="text-[11px] tracking-[1.5em] text-purple-700 mt-6 uppercase font-mono">77347 // DUALITY</p>
-            </div>
-        </div>
+        <div class="hologram-node right-side floating" style="animation-delay: -4s;">
+            <div class="asset-box" id="mellow-box">
+                <img src="mellow.jpg" class="asset-img" id="mellow-img">
+            </div>
+            <div class="bio-info" style="border-left: none; border-right: 2px solid rgba(59, 130, 246, 0.4); text-align: right;">
+                <h2 class="text-blue-500 glitch-text text-2xl mb-4 tracking-widest">MELLOW WEI</h2>
+                <p class="text-zinc-400 font-bold mb-2">[ DESIGNER_CORE ]</p>
+                极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。凉凉的手。
+            </div>
+        </div>
+    </div>
 
-                <div class="absolute right-[8%] floating group" style="animation-delay: -3.5s;">
-            <div class="hologram-asset w-[25vw] min-w-[280px]">
-                <img src="mellow.jpg" alt="Mellow" class="w-full h-auto rounded-sm border border-blue-500/10 shadow-[0_0_50px_rgba(59,130,246,0.1)]">
-                <div class="mt-8 text-center">
-                    <h2 class="text-blue-500 text-3xl font-black tracking-[0.4em] uppercase italic glitch-text">Mellow Wei</h2>
-                </div>
-            </div>
-            <div class="bio-card top-0 -right-10 text-xs">
-                <p class="font-bold mb-3 text-blue-400 tracking-widest uppercase">[ DESIGNER_CORE ]</p>
-                <p class="leading-relaxed text-blue-100/70 tracking-widest">
-                    极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。
-                </p>
-            </div>
-        </div>
-    </div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const bgm = document.getElementById('mellow-bgm');
+        let pts = [];
+        let aCtx, analyser, data;
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let pts = [];
-        const bgm = document.getElementById('mellow-bgm');
-        let audioCtx, analyser, dataArray;
-        
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            // 增加粒子数量以配合透明感带来的深度
-            pts = Array(350).fill().map(() => ({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
-                s: Math.random()*2.2, 
-                // 调整粒子颜色 Alpha 值，使其更具透明感
-                c: Math.random() > 0.6 ? 'rgba(236, 72, 153, 0.5)' : (Math.random() > 0.5 ? 'rgba(59, 130, 246, 0.5)' : 'rgba(168, 85, 247, 0.5)')
-            }));
-        }
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            pts = Array(350).fill().map(() => ({
+                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+                vx: (Math.random()-0.5)*1.3, vy: (Math.random()-0.5)*1.3,
+                s: Math.random()*2.8,
+                c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.4 ? '#3b82f6' : '#a855f7')
+            }));
+        }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            let volume = 0;
-            if (analyser) {
-                analyser.getByteFrequencyData(dataArray);
-                volume = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-            }
+        function draw() {
+            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            let v = 0;
+            if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
 
             pts.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x<0||p.x>canvas.width) p.vx *= -1;
-                if(p.y<0||p.y>canvas.height) p.vy *= -1;
-                ctx.fillStyle = p.c; 
-                ctx.shadowBlur = 10; ctx.shadowColor = p.c; // 减弱粒子发光
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
-            });
-            requestAnimationFrame(draw);
-        }
+                let m = 1 + v/15; p.x += p.vx * m; p.y += p.vy * m;
+                if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+                ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
+            });
 
-        const scene = document.getElementById('scene');
-        window.onmousemove = (e) => {
-            const rotY = (window.innerWidth/2 - e.pageX) / 35;
-            const rotX = (e.pageY - window.innerHeight/2) / 35;
-            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-        };
+            if(document.getElementById('ring')) document.getElementById('ring').style.transform = `scale(${1 + v/70})`;
 
-        // --- 手势控制部分 ---
-        let startX, startY;
-        window.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        });
+            // 极致对齐：边缘消散，主体不灭
+            document.querySelectorAll('.asset-box').forEach(box => {
+                const threshold = 95 - (v/2);
+                box.style.webkitMaskImage = `radial-gradient(circle, black ${threshold-40}%, rgba(0,0,0,0.3) ${threshold-10}%, transparent ${threshold+5}%)`;
+            });
+            document.querySelectorAll('.asset-img').forEach(img => {
+                img.style.filter = `contrast(1.1) brightness(${1+v/200})`;
+            });
 
-        window.addEventListener('touchmove', (e) => {
-            if (!startX || !startY) return;
-            let moveX = e.touches[0].clientX;
-            let moveY = e.touches[0].clientY;
-            let diffX = moveX - startX;
-            let diffY = moveY - startY;
+            requestAnimationFrame(draw);
+        }
 
-            // 简单的手势互动：滑动时微调场景旋转
-            const rotY = diffX / 10;
-            const rotX = -diffY / 10;
-            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-        });
-
-        window.addEventListener('touchend', (e) => {
-            startX = null;
-            startY = null;
-        });
-        // ------------------
-
-        // 427Hz 声音与 BGM 双重引擎
-        function startSymphony() {
-            // 播放 music.mp3
-            if (bgm.paused) {
-                bgm.play().catch(e => console.log("等待交互激活音频上下文"));
-            }
-
-            // 实时合成 427Hz 纯净正弦波
-            if(!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                const source = audioCtx.createMediaElementSource(bgm);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                analyser.fftSize = 256;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
+        function toggleResonance() {
+            if(!aCtx) {
+                aCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = aCtx.createAnalyser();
+                const s = aCtx.createMediaElementSource(bgm);
+                s.connect(analyser); analyser.connect(aCtx.destination);
+                analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
             }
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.type = 'sine'; o.frequency.value = 427;
-            g.gain.setValueAtTime(0, audioCtx.currentTime);
-            g.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.2); // 减小音量
-            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3);
-            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 3);
-            
-            // 视觉爆发反馈：透明感增强
-            document.getElementById('btn-status').innerText = "RESONATING";
-            document.body.style.filter = "hue-rotate(20deg) brightness(1.1) contrast(1.1)";
-            pts.forEach(p => { p.vx *= 10; p.vy *= 10; }); // 减弱粒子爆发
-            
-            // --- 形象消散到粒子 ---
-            document.querySelectorAll('.hologram-asset img').forEach(img => {
-                img.style.opacity = '0';
-                img.style.transform = 'translateZ(150px) scale(1.05)';
-                img.style.filter = 'blur(8px) brightness(1.8)'; // 柔和消散
-            });
-            pts.forEach(p => {
-                p.s += 0.8;
-                p.c = (Math.random() > 0.5 ? 'rgba(244, 114, 182, 0.7)' : 'rgba(34, 211, 238, 0.7)'); // 粉蓝爆破 Alpha 调整
-            });
-            // --------------------
+            if(bgm.paused) { bgm.play(); document.getElementById('label').innerText = "SYNCED"; }
+            else { bgm.pause(); document.getElementById('label').innerText = "RESONATE"; }
+        }
 
-            setTimeout(() => {
-                document.body.style.filter = "none";
-                document.getElementById('btn-status').innerText = "Resonate";
-                pts.forEach(p => { p.vx *= 0.1; p.vy *= 0.1; });
+        window.onmousemove = (e) => {
+            document.getElementById('scene').style.transform = `rotateY(${(window.innerWidth/2 - e.pageX)/60}deg) rotateX(${(e.pageY - window.innerHeight/2)/60}deg)`;
+        };
 
-                // --- 恢复形象 ---
-                document.querySelectorAll('.hologram-asset img').forEach(img => {
-                    img.style.opacity = '1';
-                    img.style.transform = 'translateZ(80px) scale(1)';
-                    img.style.filter = 'drop-shadow(0 0 30px rgba(168, 85, 247, 0.2))'; // 恢复柔和发光
-                });
-                pts.forEach(p => {
-                    p.s = Math.random()*2.2;
-                    p.c = (Math.random() > 0.6 ? 'rgba(236, 72, 153, 0.5)' : (Math.random() > 0.5 ? 'rgba(59, 130, 246, 0.5)' : 'rgba(168, 85, 247, 0.5)'));
-                });
-                // ----------------
-            }, 2800);
-        }
-
-        window.onresize = init; init(); draw();
-    </script>
+        window.onresize = init; init(); draw();
+    </script>
 </body>
 </html>
