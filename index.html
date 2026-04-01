@@ -14,7 +14,7 @@
         .hologram-asset { 
             position: relative; transform: translateZ(80px); 
             filter: drop-shadow(0 0 50px rgba(168, 85, 247, 0.5));
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* 模拟投影反射边线 */
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
         .hologram-asset::after {
             content: ""; position: absolute; inset: 0;
@@ -49,6 +49,8 @@
     <canvas id="canvas"></canvas>
     <div class="floor-reflection"></div>
 
+    <audio id="mellow-bgm" src="music.mp3" loop></audio>
+
     <div id="scene">
         <div class="absolute left-[8%] floating group">
             <div class="hologram-asset w-[28vw] min-w-[320px]">
@@ -57,9 +59,9 @@
                     <h2 class="text-pink-500 text-4xl font-black tracking-[0.4em] uppercase italic glitch-text">Hoshino Ai</h2>
                 </div>
             </div>
-            <div class="bio-card top-0 -left-10">
+            <div class="bio-card top-0 -left-10 text-xs">
                 <p class="font-bold mb-3 text-pink-400 tracking-widest uppercase">[ IDOL_ENTITY ]</p>
-                <p class="text-[11px] leading-relaxed text-pink-100/70 tracking-widest">
+                <p class="leading-relaxed text-pink-100/70 tracking-widest">
                     坍缩前的最后一抹星光。极致灵气源，于 427Hz 频率下执行绝对吸引。
                 </p>
             </div>
@@ -85,9 +87,9 @@
                     <h2 class="text-blue-500 text-4xl font-black tracking-[0.4em] uppercase italic glitch-text">Mellow Wei</h2>
                 </div>
             </div>
-            <div class="bio-card top-0 -right-10">
+            <div class="bio-card top-0 -right-10 text-xs">
                 <p class="font-bold mb-3 text-blue-400 tracking-widest uppercase">[ DESIGNER_CORE ]</p>
-                <p class="text-[11px] leading-relaxed text-blue-100/70 tracking-widest">
+                <p class="leading-relaxed text-blue-100/70 tracking-widest">
                     极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。
                 </p>
             </div>
@@ -98,6 +100,7 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let pts = [];
+        const bgm = document.getElementById('mellow-bgm');
         
         function init() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -105,7 +108,6 @@
                 x: Math.random()*canvas.width, y: Math.random()*canvas.height,
                 vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
                 s: Math.random()*2.5, 
-                // 主要色调：粉色与蓝色斑斓
                 c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.5 ? '#3b82f6' : '#a855f7')
             }));
         }
@@ -130,20 +132,27 @@
             scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
         };
 
-        // 427Hz 声音引擎
-        let audio;
+        // 427Hz 声音与 BGM 双重引擎
+        let audioCtx;
         function startSymphony() {
-            if(!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audio.createOscillator(); const g = audio.createGain();
+            // 播放 music.mp3
+            if (bgm.paused) {
+                bgm.play().catch(e => console.log("等待交互激活音频"));
+            }
+
+            // 实时合成 427Hz 纯净正弦波
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
             o.type = 'sine'; o.frequency.value = 427;
-            g.gain.setValueAtTime(0, audio.currentTime);
-            g.gain.linearRampToValueAtTime(0.1, audio.currentTime + 0.2);
-            g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 3);
-            o.connect(g); g.connect(audio.destination); o.start(); o.stop(audio.currentTime + 3);
+            g.gain.setValueAtTime(0, audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.2);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 3);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 3);
             
-            document.getElementById('btn-status').innerText = "SYNCING";
+            // 视觉爆发反馈
+            document.getElementById('btn-status').innerText = "RESONATING";
             document.body.style.filter = "hue-rotate(30deg) brightness(1.2) contrast(1.2)";
-            pts.forEach(p => { p.vx *= 12; p.vy *= 12; }); // 粒子爆发
+            pts.forEach(p => { p.vx *= 12; p.vy *= 12; }); 
             setTimeout(() => {
                 document.body.style.filter = "none";
                 document.getElementById('btn-status').innerText = "427Hz";
