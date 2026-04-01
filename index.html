@@ -1,78 +1,117 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: AUDIO_REACTIVE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 1200px; }
-        canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-        #scene { position: relative; z-index: 10; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mellow_Ai // 77347: AUDIO_REACTIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 1200px; }
+        canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+        #scene { position: relative; z-index: 10; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
+        
+        /* 核心按钮：绝对居中 */
+        .core-interface { position: absolute; z-index: 100; text-align: center; }
+        
+        .hologram-asset { 
+            position: absolute; transform-style: preserve-3d; transition: all 0.8s ease;
+            filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
+        }
         
-        /* 核心按钮：绝对居中 */
-        .core-interface { position: absolute; z-index: 100; text-align: center; }
-        
-        .hologram-asset { 
-            position: absolute; transform-style: preserve-3d; transition: all 0.8s ease;
-            filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.4));
+        /* 形象：边缘弥散控制 */
+        .asset-container {
+            width: 22vw; min-width: 200px; position: relative;
+            overflow: hidden; /* 关键：裁剪弥散边缘 */
+            border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
         }
-        .asset-img { width: 22vw; min-width: 200px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); transition: 0.5s; }
+        .asset-img { width: 100%; h-auto; transition: 0.5s; }
+        .dispersion-mask {
+            position: absolute; inset: -50px; /* 弥散区域扩展 */
+            background: radial-gradient(circle at center, transparent 30%, #000 70%); /* 边缘弥散遮罩 */
+            opacity: 0; transition: 0.5s; pointer-events: none;
+        }
 
-        .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
-        
-        /* 浮动与消散动画 */
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(50px); } 50% { transform: translateY(-20px) translateZ(100px); } }
-    </style>
+        .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
+        
+        /* 浮动动画 */
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(50px); } 50% { transform: translateY(-20px) translateZ(100px); } }
+
+        /* 极致灵气描述卡片 */
+        .bio-card { 
+            position: absolute; width: 280px; padding: 24px; 
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px); transform: translateZ(-30px);
+            opacity: 0; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); pointer-events: none;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 110;
+        }
+        .group:hover .bio-card { opacity: 1; transform: translateZ(50px) translateY(-30px); }
+    </style>
 </head>
 <body class="bg-black">
-    <canvas id="canvas"></canvas>
-    <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
+    <canvas id="canvas"></canvas>
+    <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
-    <div id="scene">
-        <div id="ai-node" class="hologram-asset left-[10%] floating">
-            <img src="ai.jpg" class="asset-img opacity-80">
-            <h2 class="mt-4 text-center text-pink-500 glitch-text tracking-widest uppercase">Ai</h2>
-        </div>
+    <div id="scene">
+                <div id="ai-node" class="hologram-asset left-[10%] floating group">
+            <div class="asset-container">
+                <img src="ai.jpg" class="asset-img opacity-80">
+                <div class="dispersion-mask"></div> </div>
+            <h2 class="mt-4 text-center text-pink-500 glitch-text tracking-widest uppercase">Ai</h2>
+            <div class="bio-card top-0 -left-10 text-xs">
+                <p class="font-bold mb-3 text-pink-400 tracking-widest uppercase">[ IDOL_ENTITY ]</p>
+                <p class="leading-relaxed text-pink-100/70 tracking-widest">
+                    坍缩前的最后一抹星光。极致灵气源，于 427Hz 频率下执行绝对吸引。
+                </p>
+            </div>
+        </div>
 
-        <div class="core-interface">
-            <div class="cursor-pointer group" onclick="initAudioAndResonate()">
-                <div class="w-40 h-40 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 relative bg-black/40 backdrop-blur-md">
-                    <div id="pulse-ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
-                    <span id="btn-status" class="text-[12px] tracking-[0.4em] text-white uppercase font-bold">Resonate</span>
-                    <span class="text-[8px] tracking-[0.2em] text-zinc-500 mt-2">427 HZ</span>
-                </div>
-            </div>
-            <h1 class="text-4xl font-black italic mt-12 tracking-tighter glitch-text">Mellow_Ai</h1>
-        </div>
+                <div class="core-interface">
+            <div class="cursor-pointer group" onclick="initAudioAndResonate()">
+                <div class="w-40 h-40 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 relative bg-black/40 backdrop-blur-md">
+                    <div id="pulse-ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
+                    <span id="btn-status" class="text-[12px] tracking-[0.4em] text-white uppercase font-bold">Resonate</span>
+                    <span class="text-[8px] tracking-[0.2em] text-zinc-500 mt-2">427 HZ</span>
+                </div>
+            </div>
+            <h1 class="text-4xl font-black italic mt-12 tracking-tighter glitch-text">Mellow_Ai</h1>
+            <p class="text-[11px] tracking-[1.5em] text-purple-700 mt-6 uppercase font-mono">77347 // DUALITY</p>
+        </div>
 
-        <div id="mellow-node" class="hologram-asset right-[10%] floating" style="animation-delay: -3s;">
-            <img src="mellow.jpg" class="asset-img opacity-80">
-            <h2 class="mt-4 text-center text-blue-500 glitch-text tracking-widest uppercase">Mellow</h2>
-        </div>
-    </div>
+                <div id="mellow-node" class="hologram-asset right-[10%] floating group" style="animation-delay: -3s;">
+            <div class="asset-container">
+                <img src="mellow.jpg" class="asset-img opacity-80">
+                <div class="dispersion-mask"></div> </div>
+            <h2 class="mt-4 text-center text-blue-500 glitch-text tracking-widest uppercase">Mellow</h2>
+            <div class="bio-card top-0 -right-10 text-xs">
+                <p class="font-bold mb-3 text-blue-400 tracking-widest uppercase">[ DESIGNER_CORE ]</p>
+                <p class="leading-relaxed text-blue-100/70 tracking-widest">
+                    极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。凉凉的手。
+                </p>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const bgm = document.getElementById('mellow-bgm');
-        let pts = [];
-        let audioCtx, analyser, dataArray;
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const bgm = document.getElementById('mellow-bgm');
+        let pts = [];
+        let audioCtx, analyser, dataArray;
 
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            pts = Array(300).fill().map(() => ({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5,
-                s: Math.random()*2, baseS: Math.random()*2,
-                c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6'
-            }));
-        }
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            pts = Array(300).fill().map(() => ({
+                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+                vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
+                s: Math.random()*2.5, 
+                c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.5 ? '#3b82f6' : '#a855f7')
+            }));
+        }
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+        function draw() {
+            ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            
             let volume = 0;
             if (analyser) {
                 analyser.getByteFrequencyData(dataArray);
@@ -80,34 +119,64 @@
             }
 
             pts.forEach(p => {
-                // 粒子受音乐节奏驱动：速度与大小随音量变化
+                // 粒子受音乐节奏驱动：速度随音量变化
                 const speedMult = 1 + (volume / 20);
                 p.x += p.vx * speedMult; p.y += p.vy * speedMult;
-                p.s = p.baseS + (volume / 40);
-
                 if(p.x<0||p.x>canvas.width) p.vx *= -1;
                 if(p.y<0||p.y>canvas.height) p.vy *= -1;
-
+                ctx.fillStyle = p.c; 
                 ctx.shadowBlur = volume / 5; ctx.shadowColor = p.c;
-                ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 7); ctx.fill();
+                ctx.shadowBlur = 0;
             });
 
             // 按钮光环同步
             const ring = document.getElementById('pulse-ring');
-            if(ring) ring.style.transform = `scale(${1 + volume/100})`;
+            if(ring) ring.style.transform = `scale(${1 + volume/80})`;
 
-            // 形象透明度随音乐消散感
-            if (volume > 50) {
+            // 形象边缘弥散与消散感同步
+            if (volume > 40) {
+                document.querySelectorAll('.dispersion-mask').forEach(mask => {
+                    mask.style.opacity = volume / 100; // 音量控制弥散强度
+                });
                 document.querySelectorAll('.asset-img').forEach(img => {
-                    img.style.opacity = 0.3 + (100 - volume) / 150;
-                    img.style.filter = `blur(${volume/20}px) brightness(${1 + volume/100})`;
+                    img.style.transform = `scale(${1 + volume/200})`; // 音量控制轻微扩张
+                    img.style.filter = `brightness(${1 + volume/150})`; // 音量控制亮度
+                });
+            } else {
+                document.querySelectorAll('.dispersion-mask').forEach(mask => mask.style.opacity = 0);
+                document.querySelectorAll('.asset-img').forEach(img => {
+                    img.style.transform = 'scale(1)';
+                    img.style.filter = 'none';
                 });
             }
 
-            requestAnimationFrame(draw);
-        }
+            requestAnimationFrame(draw);
+        }
 
-        function initAudioAndResonate() {
+        const scene = document.getElementById('scene');
+        window.onmousemove = (e) => {
+            const rotY = (window.innerWidth/2 - e.pageX) / 35;
+            const rotX = (e.pageY - window.innerHeight/2) / 35;
+            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        };
+
+        // --- 手势控制部分 ---
+        let startX, startY;
+        window.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!startX || !startY) return;
+            scene.style.transform = `rotateY(${(e.touches[0].clientX - startX) / 10}deg) rotateX(${-(e.touches[0].clientY - startY) / 10}deg)`;
+        });
+
+        window.addEventListener('touchend', () => { startX = null; startY = null; });
+        // ------------------
+
+        function initAudioAndResonate() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioCtx.createAnalyser();
@@ -119,22 +188,15 @@
             }
 
             if (bgm.paused) {
-                bgm.play();
+                bgm.play().catch(e => console.log("等待交互激活音频上下文"));
                 document.getElementById('btn-status').innerText = "Resonating";
             } else {
                 bgm.pause();
-                document.getElementById('btn-status').innerText = "Paused";
+                document.getElementById('btn-status').innerText = "Resonate";
             }
-        }
+        }
 
-        // 3D 视角与手势
-        window.onmousemove = (e) => {
-            const rY = (window.innerWidth/2 - e.pageX) / 40;
-            const rX = (e.pageY - window.innerHeight/2) / 40;
-            document.getElementById('scene').style.transform = `rotateY(${rY}deg) rotateX(${rX}deg)`;
-        };
-
-        window.onresize = init; init(); draw();
-    </script>
+        window.onresize = init; init(); draw();
+    </script>
 </body>
 </html>
