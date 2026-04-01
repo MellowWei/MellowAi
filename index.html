@@ -3,81 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: CENTER_GRAVITY</title>
+    <title>Mellow_Ai // 77347: ABSOLUTE_CENTER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; margin: 0; perspective: 1200px; }
         #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         
-        /* 核心响应式容器 */
-        #scene { 
+        /* 核心布局：Grid 叠加模式 */
+        #main-container { 
             position: relative; z-index: 10; width: 100vw; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 60px 20px; gap: 80px; /* 增加间距防止拥挤 */
-            transform-style: preserve-3d; transition: transform 0.1s ease-out;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            padding: 80px 20px; box-sizing: border-box;
         }
 
-        /* 桌面端回归并列 */
+        /* 桌面端：横向分布 */
         @media (min-width: 1024px) {
-            #scene { flex-direction: row; gap: 0; padding: 0; justify-content: space-around; }
+            #main-container { flex-direction: row; padding: 0 10%; }
         }
 
-        .hologram-node { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; }
+        /* 核心奇点：死死锁在屏幕正中心 */
+        .core-hub { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(150px);
+            z-index: 100; text-align: center; pointer-events: none;
+        }
+        .core-hub * { pointer-events: auto; } /* 仅让按钮可点 */
+
+        .hologram-node { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 350px; transform-style: preserve-3d; }
         
         .asset-box {
-            width: 85%; max-width: 300px; position: relative;
+            width: 80%; max-width: 280px; position: relative;
             background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.08);
             backdrop-filter: blur(5px);
             mask-image: radial-gradient(circle, black 50%, rgba(0,0,0,0.5) 75%, transparent 100%);
             -webkit-mask-image: radial-gradient(circle, black 50%, rgba(0,0,0,0.5) 75%, transparent 100%);
         }
-        @media (min-width: 1024px) { .asset-box { width: 25vw; max-width: none; } }
+        @media (min-width: 1024px) { .asset-box { width: 22vw; max-width: none; } }
 
         .asset-img { width: 100%; height: auto; opacity: 0.95; filter: contrast(1.1); }
 
         .bio-info {
-            width: 90%; margin-top: 25px; padding: 15px; text-align: center;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px); font-size: 10px; line-height: 1.6; letter-spacing: 0.1em;
+            width: 100%; margin-top: 25px; padding: 15px; text-align: center;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px); font-size: 10px; line-height: 1.6;
         }
         @media (min-width: 1024px) { 
-            .bio-info { width: 25vw; font-size: 11px; margin-top: 35px; text-align: left; border: none; border-left: 2px solid rgba(168, 85, 247, 0.4); }
-            .mellow-bio { text-align: right !important; border-left: none !important; border-right: 2px solid rgba(59, 130, 246, 0.4); }
+            .bio-info { text-align: left; border: none; border-left: 2px solid rgba(168, 85, 247, 0.4); }
+            .mellow-bio { text-align: right; border-left: none; border-right: 2px solid rgba(59, 130, 246, 0.4); }
         }
-
-        /* 核心奇点：强行锁定在中间 */
-        .core-hub { z-index: 100; transform: translateZ(100px); order: 0 !important; }
 
         .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
         .floating { animation: float 8s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(30px); } 50% { transform: translateY(-20px) translateZ(80px); } }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(40px); } 50% { transform: translateY(-30px) translateZ(90px); } }
     </style>
 </head>
 <body class="bg-black">
     <canvas id="canvas"></canvas>
     <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
-    <div id="scene">
+    <div class="core-hub">
+        <div class="cursor-pointer group" onclick="toggleResonance()">
+            <div class="w-36 h-36 lg:w-44 lg:h-44 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/50 backdrop-blur-3xl relative shadow-[0_0_60px_rgba(168,85,247,0.1)]">
+                <div id="ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
+                <span id="label" class="text-white font-black tracking-[0.4em] text-[10px] lg:text-xs uppercase">Resonate</span>
+                <span class="text-zinc-600 text-[8px] mt-2 tracking-widest font-mono">77347 // 427HZ</span>
+            </div>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-black italic mt-10 glitch-text">Mellow_Ai</h1>
+    </div>
+
+    <div id="main-container">
         <div class="hologram-node floating">
             <div class="asset-box">
                 <img src="ai.jpg" class="asset-img">
             </div>
             <div class="bio-info">
-                <h2 class="text-pink-500 glitch-text text-xl lg:text-2xl mb-3 tracking-widest uppercase">Hoshino Ai</h2>
+                <h2 class="text-pink-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Hoshino Ai</h2>
                 <p class="text-zinc-400 font-bold mb-1">[ IDOL_ENTITY ]</p>
                 坍缩前的最后一抹星光。极致灵气源，于 427Hz 频率下执行绝对吸引。
             </div>
-        </div>
-
-        <div class="core-hub">
-            <div class="cursor-pointer group" onclick="toggleResonance()">
-                <div class="w-40 h-40 lg:w-44 lg:h-44 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/40 backdrop-blur-3xl relative">
-                    <div id="ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
-                    <span id="label" class="text-white font-black tracking-[0.5em] text-[10px] lg:text-xs uppercase">Resonate</span>
-                    <span class="text-zinc-600 text-[8px] mt-2 tracking-widest font-mono">77347 // 427HZ</span>
-                </div>
-            </div>
-            <h1 class="text-4xl lg:text-5xl font-black italic mt-10 glitch-text">Mellow_Ai</h1>
         </div>
 
         <div class="hologram-node floating" style="animation-delay: -4s;">
@@ -85,7 +88,7 @@
                 <img src="mellow.jpg" class="asset-img">
             </div>
             <div class="bio-info mellow-bio">
-                <h2 class="text-blue-500 glitch-text text-xl lg:text-2xl mb-3 tracking-widest uppercase">Mellow Wei</h2>
+                <h2 class="text-blue-500 glitch-text text-xl lg:text-2xl mb-2 tracking-widest uppercase">Mellow Wei</h2>
                 <p class="text-zinc-400 font-bold mb-1">[ DESIGNER_CORE ]</p>
                 极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。凉凉的手。
             </div>
