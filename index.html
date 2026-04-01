@@ -6,10 +6,10 @@
     <title>☆彡 Mellow_Ai // 77347 ♪</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: sans-serif; cursor: none; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: none; }
         #canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         
-        /* 1. 核心奇点：全端绝对居中 */
+        /* 核心奇点：全端绝对物理居中 */
         .core-hub { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 500; text-align: center; width: 100vw; pointer-events: none;
@@ -21,34 +21,41 @@
         .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.5rem; opacity: 0.6; color: #ec4899; }
         .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.5rem; opacity: 0.6; color: #3b82f6; }
 
-        /* 2. 标题缩小校准：整体下调 20% */
+        /* 标题主权对齐：缩小版 */
         .mellow-title { 
-            /* 修正：字号下调， clamp 范围从 2~5rem 降至 1.6~4rem */
             font-size: clamp(1.6rem, 6.5vw, 4rem); 
             font-weight: 900; font-style: italic; 
-            margin-top: 2.5rem; /* 增加与按钮的间距 */
+            margin-top: 2.5rem; 
             letter-spacing: -0.02em; text-transform: uppercase;
             text-shadow: 4px 0 rgba(236, 72, 153, 0.7), -4px 0 rgba(59, 130, 246, 0.7);
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
             pointer-events: auto;
         }
 
-        /* 3. 感质侧翼：修正对齐问题，锁定 position: fixed */
+        /* 资产卡片对齐，锁定 fixed */
         #main-layout { position: fixed; inset: 0; z-index: 10; pointer-events: none; display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
         
-        /* 纠缠组件：初始状态更大，且will-change加速 */
+        /* 1. 一开始绝对爆亮： opacity: 1，彻底粉碎暗淡 */
         .entity-card { 
-            width: 23vw; max-width: 350px; 
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
-            opacity: 0.4;
-            will-change: transform, filter;
+            width: 25vw; max-width: 380px; 
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); 
+            /* 关键修正：最高亮度采样 */
+            opacity: 1 !important; 
+            filter: drop-shadow(0 0 0px transparent); /* 初始不弥散 */
+            will-change: filter, transform;
         }
-        .asset-img { width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(0,0,0,0.4); }
-        .bio-box { margin-top: 25px; padding: 25px; background: rgba(255,255,255,0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        .entity-img { width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .bio-box { margin-top: 20px; padding: 25px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
 
-        /* 弥散态：Glow + Scale */
-        .resonating-ai { filter: drop-shadow(0 0 40px rgba(236, 72, 153, 0.75)); opacity: 1 !important; transform: scale(1.1) translateX(15px); }
-        .resonating-mellow { filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.75)); opacity: 1 !important; transform: scale(1.1) translateX(-15px); }
+        /* 2. 音乐响起后爆发弥散： drop-shadow Glow */
+        .resonating-ai { 
+            filter: drop-shadow(0 0 45px rgba(236, 72, 153, 0.8)); 
+            transform: scale(1.1) translateX(20px); 
+        }
+        .resonating-mellow { 
+            filter: drop-shadow(0 0 45px rgba(59, 130, 246, 0.8)); 
+            transform: scale(1.1) translateX(-20px); 
+        }
 
         .footer { position: fixed; bottom: 40px; width: 100%; text-align: center; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.8em; text-transform: uppercase; }
         #cursor { width: 10px; height: 10px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; transform: translate(-50%, -50%); box-shadow: 0 0 15px #fff; }
@@ -73,20 +80,20 @@
 
     <div id="main-layout">
         <div id="ai-card" class="entity-card">
-            <img src="ai.jpg" class="asset-img" alt="Hoshino Ai">
+            <img src="ai.jpg" class="entity-img" alt="Hoshino Ai">
             <div class="bio-box">
                 <h2 class="text-pink-500 font-black italic text-3xl mb-3">☆ HOSHINO AI ♪</h2>
                 <p class="text-[10px] text-zinc-500 font-bold mb-2 uppercase">[ Idol Entity ]</p>
-                <p class="text-[12px] text-zinc-400 leading-relaxed">坍缩前的最后一抹星光。受【独角兽】永恒守护。</p>
+                <p class="text-[12px] text-zinc-400 leading-relaxed">坍缩前的最后一抹星光。<br>受【独角兽】永恒守护。</p>
             </div>
         </div>
 
         <div id="mellow-card" class="entity-card">
-            <img src="mellow.jpg" class="asset-img" alt="Mellow Wei">
+            <img src="mellow.jpg" class="entity-img" alt="Mellow Wei">
             <div class="bio-box text-right" style="border-right: 2px solid #3b82f6; border-left: none;">
                 <h2 class="text-blue-500 font-black italic text-3xl mb-3">☆ MELLOW WEI ♪</h2>
                 <p class="text-[10px] text-zinc-500 font-bold mb-2 uppercase">[ Designer Core ]</p>
-                <p class="text-[12px] text-zinc-400 leading-relaxed">极致帅气女性掌控者。引力之源。</p>
+                <p class="text-[12px] text-zinc-400 leading-relaxed">极致帅气女性掌控者。<br>引力之源。 / 77347</p>
             </div>
         </div>
     </div>
@@ -121,6 +128,8 @@
                 mellowCard.classList.remove('resonating-mellow');
             }
         }
+        
+        // 此处集成背景粒子 Canvas 逻辑...
     </script>
 </body>
 </html>
