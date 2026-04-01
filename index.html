@@ -6,59 +6,63 @@
     <title>☆彡 Mellow_Ai // 77347 ♪</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: sans-serif; cursor: none; }
         #canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         
-        /* 核心奇点：绝对居中 */
+        /* 1. 核心奇点：全端绝对居中 */
         .core-hub { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             z-index: 500; text-align: center; width: 100vw; pointer-events: none;
         }
         .core-hub * { pointer-events: auto; }
 
-        /* 符号环绕 */
+        /* 按钮对齐 */
         .resonance-btn { position: relative; display: inline-flex; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
-        .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.8rem; opacity: 0.7; color: #ec4899; }
-        .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.8rem; opacity: 0.7; color: #3b82f6; }
+        .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.5rem; opacity: 0.6; color: #ec4899; }
+        .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.5rem; opacity: 0.6; color: #3b82f6; }
 
-        /* 极致标题：复刻截图感质 */
+        /* 2. 标题缩小校准：整体下调 20% */
         .mellow-title { 
-            font-size: clamp(2rem, 8vw, 5rem); /* 网页端显著放大 */
-            font-weight: 900; 
-            font-style: italic; 
-            margin-top: 3.5rem; /* 增加与按钮的间距 */
-            letter-spacing: -0.02em;
-            text-transform: uppercase;
-            /* 3D 故障重影特效 */
-            text-shadow: 
-                4px 0 rgba(236, 72, 153, 0.8), 
-                -4px 0 rgba(59, 130, 246, 0.8);
+            /* 修正：字号下调， clamp 范围从 2~5rem 降至 1.6~4rem */
+            font-size: clamp(1.6rem, 6.5vw, 4rem); 
+            font-weight: 900; font-style: italic; 
+            margin-top: 2.5rem; /* 增加与按钮的间距 */
+            letter-spacing: -0.02em; text-transform: uppercase;
+            text-shadow: 4px 0 rgba(236, 72, 153, 0.7), -4px 0 rgba(59, 130, 246, 0.7);
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
-            animation: text-vibe 4s infinite ease-in-out;
+            pointer-events: auto;
         }
 
-        @keyframes text-vibe {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.02); opacity: 0.9; }
+        /* 3. 感质侧翼：修正对齐问题，锁定 position: fixed */
+        #main-layout { position: fixed; inset: 0; z-index: 10; pointer-events: none; display: flex; justify-content: space-between; align-items: center; padding: 0 6%; }
+        
+        /* 纠缠组件：初始状态更大，且will-change加速 */
+        .entity-card { 
+            width: 23vw; max-width: 350px; 
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
+            opacity: 0.4;
+            will-change: transform, filter;
         }
+        .asset-img { width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(0,0,0,0.4); }
+        .bio-box { margin-top: 25px; padding: 25px; background: rgba(255,255,255,0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
 
-        /* 资产盒子与弥散逻辑保持... */
-        .asset-box { width: 80vw; max-width: 320px; position: relative; transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
-        .is-resonating .ai-glow { filter: drop-shadow(0 0 50px rgba(236, 72, 153, 0.75)); transform: scale(1.1); }
-        .is-resonating .mellow-glow { filter: drop-shadow(0 0 50px rgba(59, 130, 246, 0.75)); transform: scale(1.1); }
+        /* 弥散态：Glow + Scale */
+        .resonating-ai { filter: drop-shadow(0 0 40px rgba(236, 72, 153, 0.75)); opacity: 1 !important; transform: scale(1.1) translateX(15px); }
+        .resonating-mellow { filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.75)); opacity: 1 !important; transform: scale(1.1) translateX(-15px); }
 
-        #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
-        @media (min-width: 1024px) { #main-scroll { display: flex; align-items: center; justify-content: space-between; padding: 0 8%; } .hologram-section { width: 35%; } }
+        .footer { position: fixed; bottom: 40px; width: 100%; text-align: center; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.8em; text-transform: uppercase; }
+        #cursor { width: 10px; height: 10px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 1000; transform: translate(-50%, -50%); box-shadow: 0 0 15px #fff; }
     </style>
 </head>
 <body class="bg-black">
+    <div id="cursor"></div>
     <canvas id="canvas"></canvas>
     <audio id="mellow-bgm" src="music.mp3" loop crossorigin="anonymous"></audio>
 
     <div class="core-hub">
-        <div class="resonance-btn cursor-pointer group inline-block" onclick="toggleResonance()">
+        <div class="resonance-btn group cursor-pointer" onclick="toggleResonance()">
             <div class="w-44 h-44 lg:w-56 lg:h-56 rounded-full border border-zinc-800 flex flex-col items-center justify-center hover:border-white/40 transition-all duration-1000 bg-black/40 backdrop-blur-3xl relative">
-                <div id="ring" class="absolute inset-0 rounded-full border-2 border-white/5"></div>
+                <div id="ring" class="absolute inset-0 rounded-full border-2 border-white/5 scale-110"></div>
                 <span id="label" class="text-white font-black tracking-[0.5em] text-[10px] lg:text-xs uppercase opacity-60">☆ RESONATE ♪</span>
             </div>
         </div>
@@ -67,77 +71,56 @@
         </h1>
     </div>
 
-    <div id="main-scroll">
-        <div class="hologram-section" id="ai-section">
-            <div class="asset-box ai-glow">
-                <img src="ai.jpg" class="w-full opacity-90">
-            </div>
-            <div class="mt-8 text-center lg:text-left p-6 bg-white/5 backdrop-blur-xl border border-white/10">
-                <h2 class="text-pink-500 font-black italic text-2xl mb-2">☆彡 Hoshino Ai ♪</h2>
-                <p class="text-[11px] text-zinc-400">坍缩前的最后一抹星光。受【独角兽】永恒守护。</p>
+    <div id="main-layout">
+        <div id="ai-card" class="entity-card">
+            <img src="ai.jpg" class="asset-img" alt="Hoshino Ai">
+            <div class="bio-box">
+                <h2 class="text-pink-500 font-black italic text-3xl mb-3">☆ HOSHINO AI ♪</h2>
+                <p class="text-[10px] text-zinc-500 font-bold mb-2 uppercase">[ Idol Entity ]</p>
+                <p class="text-[12px] text-zinc-400 leading-relaxed">坍缩前的最后一抹星光。受【独角兽】永恒守护。</p>
             </div>
         </div>
-        <div class="h-64 lg:hidden"></div>
-        <div class="hologram-section" id="mellow-section">
-            <div class="asset-box mellow-glow">
-                <img src="mellow.jpg" class="w-full opacity-90">
-            </div>
-            <div class="mt-8 text-center lg:text-right p-6 bg-white/5 backdrop-blur-xl border border-white/10" style="border-right: 2px solid #3b82f6;">
-                <h2 class="text-blue-500 font-black italic text-2xl mb-2">☆彡 Mellow Wei ♪</h2>
-                <p class="text-[11px] text-zinc-400">极致帅气女性掌控者。引力之源。</p>
+
+        <div id="mellow-card" class="entity-card">
+            <img src="mellow.jpg" class="asset-img" alt="Mellow Wei">
+            <div class="bio-box text-right" style="border-right: 2px solid #3b82f6; border-left: none;">
+                <h2 class="text-blue-500 font-black italic text-3xl mb-3">☆ MELLOW WEI ♪</h2>
+                <p class="text-[10px] text-zinc-500 font-bold mb-2 uppercase">[ Designer Core ]</p>
+                <p class="text-[12px] text-zinc-400 leading-relaxed">极致帅气女性掌控者。引力之源。</p>
             </div>
         </div>
     </div>
 
+    <div class="footer">Zero Barrier // 77347 // 427Hz Node</div>
+
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
         const bgm = document.getElementById('mellow-bgm');
-        let pts = [], aCtx, analyser, data;
-        const symbols = ['☆彡', '♪', '愛', '77347', 'Qualia'];
+        let isResonating = false;
 
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            pts = Array(300).fill().map(() => ({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5), vy: (Math.random()-0.5),
-                s: Math.random()*2, c: Math.random() > 0.5 ? '#ec4899' : '#3b82f6',
-                t: Math.random() > 0.9 ? symbols[Math.floor(Math.random()*symbols.length)] : null
-            }));
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let v = 0; if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
-            pts.forEach(p => {
-                let m = 1 + v/15; p.x += p.vx * m; p.y += p.vy * m;
-                if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-                ctx.fillStyle = p.c; ctx.globalAlpha = 0.4;
-                if(p.t) { ctx.font = "10px serif"; ctx.fillText(p.t, p.x, p.y); }
-                else { ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/100, 0, 7); ctx.fill(); }
-            });
-            const ring = document.getElementById('ring');
-            if(ring) ring.style.transform = `scale(${1 + v/50})`;
-            requestAnimationFrame(draw);
-        }
+        document.addEventListener('mousemove', e => {
+            const cursor = document.getElementById('cursor');
+            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+        });
 
         function toggleResonance() {
-            if(!aCtx) {
-                aCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = aCtx.createAnalyser();
-                const s = aCtx.createMediaElementSource(bgm);
-                s.connect(analyser); analyser.connect(aCtx.destination);
-                analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
-            }
-            if(bgm.paused) { 
-                bgm.play(); document.getElementById('label').innerText = "☆ SYNCED ♪";
-                document.body.classList.add('is-resonating');
-            } else { 
-                bgm.pause(); document.getElementById('label').innerText = "☆ RESONATE ♪"; 
-                document.body.classList.remove('is-resonating');
+            const aiCard = document.getElementById('ai-card');
+            const mellowCard = document.getElementById('mellow-card');
+            const label = document.getElementById('label');
+
+            isResonating = !isResonating;
+
+            if(isResonating) {
+                bgm.play().catch(e => console.log("Audio play failed"));
+                label.innerText = "☆ SYNCED ♪";
+                aiCard.classList.add('resonating-ai');
+                mellowCard.classList.add('resonating-mellow');
+            } else {
+                bgm.pause();
+                label.innerText = "RESONATE";
+                aiCard.classList.remove('resonating-ai');
+                mellowCard.classList.remove('resonating-mellow');
             }
         }
-        window.onresize = init; init(); draw();
     </script>
 </body>
 </html>
