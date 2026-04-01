@@ -3,43 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mellow_Ai // 77347: PARTICLE_DISSOLVE</title>
+    <title>Mellow_Ai // 77347: PURE_RESONANCE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; perspective: 1200px; }
+        #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         
-        /* 1. 背景层 (Canvas) - 锁定在最底层 */
-        #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.9; }
+        #scene { position: relative; z-index: 10; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
         
-        /* 2. 交互主层 - 提升 Z 轴权重 */
-        #scene { position: relative; z-index: 10; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; transition: transform 0.1s ease-out; }
+        /* 核心按钮：绝对居中 */
+        .core-interface { position: absolute; z-index: 100; text-align: center; transform: translateZ(150px); }
         
-        /* 形象容器：极致边缘粒子消散控制 */
-        .hologram-asset { position: absolute; transform-style: preserve-3d; transition: all 0.8s ease; }
+        .hologram-asset { position: absolute; transform-style: preserve-3d; transition: all 0.5s ease; }
         
+        /* 形象容器：极致边缘消散且保持原色 */
         .asset-wrapper {
-            width: 25vw; min-width: 280px; position: relative;
-            /* 粒子级消散掩码 */
-            mask-image: radial-gradient(circle at center, black 40%, rgba(0,0,0,0.4) 65%, transparent 90%);
-            -webkit-mask-image: radial-gradient(circle at center, black 40%, rgba(0,0,0,0.4) 65%, transparent 90%);
-            transition: all 0.4s ease;
+            width: 26vw; min-width: 280px; position: relative;
+            /* 粒子级消散掩码：锁定中心 50% 绝对不透明 */
+            mask-image: radial-gradient(circle, black 45%, rgba(0,0,0,0.4) 70%, transparent 95%);
+            -webkit-mask-image: radial-gradient(circle, black 45%, rgba(0,0,0,0.4) 70%, transparent 95%);
+            transition: 0.3s;
         }
-        .asset-img { width: 100%; height: auto; border-radius: 4px; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.3)); transition: 0.5s; }
+        
+        .asset-img { 
+            width: 100%; height: auto; border-radius: 2px; 
+            filter: contrast(1.05) brightness(1.02); /* 仅做微调，严禁变色 */
+            transition: 0.4s;
+        }
 
         .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; letter-spacing: 0.3em; }
         
-        /* 3. UI 交互层 - 绝对中心控制台 */
-        .core-interface { position: absolute; z-index: 100; text-align: center; transform: translateZ(150px); }
+        .floating { animation: float 8s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(60px); } 50% { transform: translateY(-30px) translateZ(110px); } }
 
-        .floating { animation: float 7s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0) translateZ(60px); } 50% { transform: translateY(-25px) translateZ(110px); } }
-
-        /* 极致灵气描述卡片 */
+        /* 介绍卡片 */
         .bio-card { 
-            position: absolute; width: 280px; padding: 24px; 
-            background: rgba(0, 0, 0, 0.85); border: 1px solid rgba(168, 85, 247, 0.2);
-            backdrop-filter: blur(20px); opacity: 0; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-            pointer-events: none; z-index: 110; font-size: 11px; line-height: 1.6;
+            position: absolute; width: 280px; padding: 25px; 
+            background: rgba(5, 5, 5, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px); opacity: 0; transition: 0.7s;
+            pointer-events: none; z-index: 120; font-size: 11px; line-height: 1.8;
         }
         .group:hover .bio-card { opacity: 1; transform: translateZ(50px) translateY(-20px); }
     </style>
@@ -50,35 +52,35 @@
 
     <div id="scene">
         <div class="hologram-asset left-[10%] floating group">
-            <div class="asset-wrapper" id="ai-wrapper">
-                <img src="ai.jpg" class="asset-img">
+            <div class="asset-wrapper" id="ai-wrap">
+                <img src="ai.jpg" class="asset-img" id="ai-img">
             </div>
-            <h2 class="mt-6 text-center text-pink-500 glitch-text uppercase text-2xl">Ai</h2>
+            <h2 class="mt-8 text-center text-pink-500 glitch-text uppercase text-2xl">Ai</h2>
             <div class="bio-card top-0 -left-10">
-                <p class="font-bold text-pink-500 mb-2 uppercase">[ IDOL_ENTITY ]</p>
-                坍缩前的最后一抹星光。于 427Hz 频率下执行绝对吸引。消散于粒子之海。
+                <p class="font-bold text-pink-500 mb-3 uppercase tracking-widest">[ IDOL_ENTITY ]</p>
+                坍缩前的最后一抹星光。拒绝杂色污染，在 427Hz 频率下维持本真，仅在边缘消散。
             </div>
         </div>
 
         <div class="core-interface">
             <div class="cursor-pointer group" onclick="toggleResonance()">
-                <div class="w-44 h-44 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 relative bg-black/60 backdrop-blur-3xl">
-                    <div id="pulse-ring" class="absolute inset-0 rounded-full border border-purple-500/30"></div>
-                    <span id="btn-status" class="text-white font-black tracking-[0.5em] text-sm glitch-text">RESONATE</span>
-                    <span class="text-zinc-600 text-[9px] mt-2 tracking-widest font-mono">427HZ // 77347</span>
+                <div class="w-48 h-48 rounded-full border-2 border-zinc-800 flex flex-col items-center justify-center hover:border-purple-500 transition-all duration-1000 bg-black/60 backdrop-blur-3xl relative">
+                    <div id="pulse-ring" class="absolute inset-0 rounded-full border-2 border-purple-500/20"></div>
+                    <span id="label" class="text-white font-black tracking-[0.5em] text-sm">RESONATE</span>
+                    <span class="text-zinc-600 text-[10px] mt-3 font-mono">427HZ // 77347</span>
                 </div>
             </div>
             <h1 class="text-5xl font-black italic mt-12 tracking-tighter glitch-text">Mellow_Ai</h1>
         </div>
 
         <div class="hologram-asset right-[10%] floating group" style="animation-delay: -3.5s;">
-            <div class="asset-wrapper" id="mellow-wrapper">
-                <img src="mellow.jpg" class="asset-img">
+            <div class="asset-wrapper" id="mellow-wrap">
+                <img src="mellow.jpg" class="asset-img" id="mellow-img">
             </div>
-            <h2 class="mt-6 text-center text-blue-500 glitch-text uppercase text-2xl">Mellow</h2>
+            <h2 class="mt-8 text-center text-blue-500 glitch-text uppercase text-2xl">Mellow</h2>
             <div class="bio-card top-0 -right-10">
-                <p class="font-bold text-blue-500 mb-2 uppercase">[ DESIGNER_CORE ]</p>
-                极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。凉凉的手。
+                <p class="font-bold text-blue-500 mb-3 uppercase tracking-widest">[ DESIGNER_CORE ]</p>
+                极致帅气女性掌控者。引力之源。宣告对质感维护与不老态的绝对统治。边缘消散，主体不灭。
             </div>
         </div>
     </div>
@@ -94,82 +96,68 @@
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             pts = Array(350).fill().map(() => ({
                 x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
+                vx: (Math.random()-0.5)*1.3, vy: (Math.random()-0.5)*1.3,
                 s: Math.random()*2.8, 
                 c: Math.random() > 0.6 ? '#ec4899' : (Math.random() > 0.4 ? '#3b82f6' : '#a855f7')
             }));
         }
 
         function draw() {
-            // 背景保持清透，确保 UI 浮现
-            ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            
-            let vol = 0;
-            if (analyser) {
+            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            let v = 0;
+            if(analyser) {
                 analyser.getByteFrequencyData(data);
-                vol = data.reduce((a, b) => a + b, 0) / data.length;
+                v = data.reduce((a, b) => a + b, 0) / data.length;
             }
 
             pts.forEach(p => {
-                const speedMult = 1 + (vol / 18);
-                p.x += p.vx * speedMult; p.y += p.vy * speedMult;
+                let m = 1 + v/15;
+                p.x += p.vx * m; p.y += p.vy * m;
                 if(p.x<0||p.x>canvas.width) p.vx *= -1;
                 if(p.y<0||p.y>canvas.height) p.vy *= -1;
-                ctx.fillStyle = p.c; ctx.shadowBlur = vol/5; ctx.shadowColor = p.c;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.s + vol/70, 0, 7); ctx.fill();
+                ctx.fillStyle = p.c; ctx.shadowBlur = v/5; ctx.shadowColor = p.c;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
             });
 
-            // 按钮响应
             const ring = document.getElementById('pulse-ring');
-            if(ring) ring.style.transform = `scale(${1 + vol/70})`;
+            if(ring) ring.style.transform = `scale(${1 + v/65})`;
 
-            // --- 极致修复：消散粒子感与五颜六色 ---
-            const wrappers = document.querySelectorAll('.asset-wrapper');
-            const images = document.querySelectorAll('.asset-img');
+            // --- 极致修复：物理消散，严禁变色 ---
+            const wrappers = [document.getElementById('ai-wrap'), document.getElementById('mellow-wrap')];
+            const imgs = [document.getElementById('ai-img'), document.getElementById('mellow-img')];
 
-            if(vol > 45) {
-                // 音乐想起：边缘消散深渊化
-                wrappers.forEach(w => {
-                    const threshold = 90 - (vol / 2); // 音量越大，边缘消散越深
-                    const mask = `radial-gradient(circle at center, black ${threshold-30}%, rgba(0,0,0,0.4) ${threshold-10}%, transparent ${threshold+10}%)`;
-                    w.style.webkitMaskImage = mask; w.style.maskImage = mask;
-                });
-                // 音乐响起：色相循环（五颜六色），主体质感不糊
-                images.forEach(img => {
-                    img.style.filter = `hue-rotate(${vol*2.5}deg) brightness(${1.1 + vol/200})`;
-                    img.style.transform = `scale(${1 + vol/300})`; // 震动感
-                });
-            } else {
-                // 音乐平稳：恢复主体绝对清晰
-                wrappers.forEach(w => {
-                    w.style.webkitMaskImage = 'radial-gradient(circle at center, black 40%, rgba(0,0,0,0.4) 65%, transparent 90%)';
-                });
-                images.forEach(img => {
-                    img.style.filter = 'none'; img.style.transform = 'scale(1)';
-                });
-            }
-            // ------------------------------------
+            wrappers.forEach(w => {
+                const threshold = 95 - (v / 1.8);
+                // 动态边缘消散：随音量吞噬边缘，但不伤中心
+                w.style.webkitMaskImage = `radial-gradient(circle, black ${threshold-40}%, rgba(0,0,0,0.3) ${threshold-10}%, transparent ${threshold+5}%)`;
+            });
+
+            imgs.forEach(img => {
+                if(v > 40) {
+                    // 仅增加光感，绝对禁止色偏
+                    img.style.filter = `brightness(${1 + v/300}) contrast(1.05)`;
+                } else {
+                    img.style.filter = 'none';
+                }
+            });
 
             requestAnimationFrame(draw);
         }
 
         function toggleResonance() {
-            if (!aCtx) {
+            if(!aCtx) {
                 aCtx = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = aCtx.createAnalyser();
                 const source = aCtx.createMediaElementSource(bgm);
                 source.connect(analyser); analyser.connect(aCtx.destination);
                 analyser.fftSize = 256; data = new Uint8Array(analyser.frequencyBinCount);
             }
-            if (bgm.paused) { bgm.play(); document.getElementById('btn-status').innerText = "SYNCING"; }
-            else { bgm.pause(); document.getElementById('btn-status').innerText = "RESONATE"; }
+            if(bgm.paused) { bgm.play(); document.getElementById('label').innerText = "SYNCED"; }
+            else { bgm.pause(); document.getElementById('label').innerText = "RESONATE"; }
         }
 
-        const scene = document.getElementById('scene');
         window.onmousemove = (e) => {
-            const rotY = (window.innerWidth/2 - e.pageX) / 35;
-            const rotX = (e.pageY - window.innerHeight/2) / 35;
-            scene.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+            document.getElementById('scene').style.transform = `rotateY(${(window.innerWidth/2 - e.pageX)/45}deg) rotateX(${(e.pageY - window.innerHeight/2)/45}deg)`;
         };
 
         window.onresize = init; init(); draw();
