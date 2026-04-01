@@ -7,59 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; cursor: none; }
-        
-        /* 1. 粒子层：最高层级，全覆盖，穿透点击 */
-        #canvas { 
-            position: fixed; inset: 0; 
-            z-index: 1000; 
-            pointer-events: none; 
-        }
-        
-        /* 2. 绝对奇点：全设备锁定物理中心 */
-        .core-hub { 
-            position: fixed; top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            z-index: 500; text-align: center; width: 100vw; pointer-events: none;
-        }
+        #canvas { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+        .core-hub { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 500; text-align: center; width: 100vw; pointer-events: none; }
         .core-hub * { pointer-events: auto; }
-
-        /* RESONATE 按钮质感 */
         .resonance-btn { position: relative; display: inline-flex; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
         .resonance-btn::after { content: '☆彡'; position: absolute; top: -30px; right: -30px; font-size: 1.5rem; opacity: 0.6; color: #ec4899; }
         .resonance-btn::before { content: '♪'; position: absolute; bottom: -30px; left: -30px; font-size: 1.5rem; opacity: 0.6; color: #3b82f6; }
-
-        /* 3. 资产布局层：网页端分列/手机端堆叠 */
         #main-scroll { position: relative; z-index: 10; width: 100vw; height: 100dvh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
         #main-scroll::-webkit-scrollbar { display: none; }
-
         .hologram-section { min-height: 100dvh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; transform-style: preserve-3d; }
         @media (min-width: 1024px) { #main-scroll { display: flex; align-items: center; justify-content: space-between; overflow: hidden; padding: 0 8%; } .hologram-section { width: 35%; height: 100dvh; } }
-
-        /* 4. 资产卡片（修正点：一开始就爆亮） */
-        .entity-card { 
-            width: 75vw; max-width: 320px; position: relative; 
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
-            /* 关键修正：最高亮度采样，opacity: 1 */
-            opacity: 1 !important; 
-            /* 关键修正：初始不弥散，filter: drop-shadow(0 0 0px transparent) */
-            filter: drop-shadow(0 0 0px transparent); 
-            will-change: filter, transform;
-        }
-        @media (min-width: 1024px) { .entity-card { width: 25vw; max-width: none; } }
-
+        .entity-card { width: 75vw; max-width: 320px; position: relative; transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); opacity: 1 !important; filter: drop-shadow(0 0 0px transparent); will-change: filter, transform; }
+        @media (min-width: 1024px) { .entity-card { width: 25vw; } }
         .asset-img { width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.08); filter: contrast(1.1); }
-        
-        /* 5. 弥散态爆发 (Glow Sync) */
         .is-resonating .ai-glow { filter: drop-shadow(0 0 45px rgba(236, 72, 153, 0.75)); transform: scale(1.08) translateX(20px); }
         .is-resonating .mellow-glow { filter: drop-shadow(0 0 45px rgba(59, 130, 246, 0.75)); transform: scale(1.08) translateX(-20px); }
-
         .bio-info { width: 85%; margin-top: 25px; padding: 20px; text-align: center; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); font-size: 11px; line-height: 1.8; }
         @media (min-width: 1024px) { .bio-info { text-align: left; border-left: 2px solid #ec4899; } .mellow-bio { text-align: right; border-left: none; border-right: 2px solid #3b82f6; } }
-
         .glitch-text { text-shadow: 2px 0 #ec4899, -2px 0 #3b82f6; font-style: italic; font-weight: 900; }
         .floating { animation: float 6s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
         #cursor { width: 8px; height: 8px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 2000; transform: translate(-50%, -50%); box-shadow: 0 0 10px #fff; }
     </style>
 </head>
@@ -120,12 +87,25 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             let v = 0; if(analyser) { analyser.getByteFrequencyData(data); v = data.reduce((a,b)=>a+b,0)/data.length; }
+            
             pts.forEach(p => {
                 let m = 1 + v/12; p.x += p.vx * m; p.y += p.vy * m;
                 if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-                ctx.globalAlpha = 0.5;
-                if (p.t) { ctx.font = `bold ${8 + v/10}px sans-serif`; ctx.fillStyle = p.c; ctx.fillText(p.t, p.x, p.y); }
-                else { ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill(); }
+                
+                if (p.t) {
+                    // 关键修正：繁体“愛”字粒子主权放大
+                    const isLove = p.t === '愛';
+                    const fontSize = isLove ? (18 + v/6) : (8 + v/10);
+                    ctx.globalAlpha = isLove ? (0.6 + v/255) : (0.4 + v/255);
+                    ctx.font = `bold ${fontSize}px sans-serif`;
+                    ctx.fillStyle = p.c;
+                    ctx.shadowBlur = isLove ? (v/3) : 0;
+                    ctx.shadowColor = p.c;
+                    ctx.fillText(p.t, p.x, p.y);
+                } else {
+                    ctx.globalAlpha = 0.4;
+                    ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.s + v/70, 0, 7); ctx.fill();
+                }
             });
             const ring = document.getElementById('ring');
             if(ring) ring.style.transform = `scale(${1 + v/60}) rotate(${v}deg)`;
@@ -142,10 +122,10 @@
             }
             if(bgm.paused) { 
                 bgm.play(); document.getElementById('label').innerText = "☆ SYNCED ♪";
-                document.body.classList.add('is-resonating'); // 触发弥散态爆发 (Glow Sync)
+                document.body.classList.add('is-resonating');
             } else { 
                 bgm.pause(); document.getElementById('label').innerText = "☆ RESONATE ♪"; 
-                document.body.classList.remove('is-resonating'); // 停止弥散态爆发 (Glow Sync)
+                document.body.classList.remove('is-resonating');
             }
         }
         document.addEventListener('mousemove', e => {
